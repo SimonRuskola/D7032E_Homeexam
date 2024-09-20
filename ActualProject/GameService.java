@@ -3,7 +3,7 @@ package ActualProject;
 public class GameService implements GameServiceInterface {
     private Game game;
 
-    public GameServiceImpl(Game game) {
+    public GameService(Game game) {
         this.game = game;
     }
 
