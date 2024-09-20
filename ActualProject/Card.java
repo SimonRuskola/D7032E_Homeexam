@@ -1,27 +1,60 @@
 package ActualProject;
 
 public class Card implements CardInterface {
-    private String name;
-    private int value;
-    private String description;
+    private String content;
+    
+
+    public Card(String content) {
+        this.content = content;
+    }
+
+
 
     @Override
-    public String getBackside() {
+    public String getContent() {
         // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Unimplemented method 'getContent'");
     }
+
+
 
     @Override
-    public String getFrontside() {
+    public void setContent(String content) {
         // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Unimplemented method 'setContent'");
     }
 
-    public Card(String name, String region, int value, String description) {
-        this.name = name;
-        this.value = value;
-        this.description = description;
+
+
+    @Override
+    public void flipToFrontSide() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'flipToFrontSide'");
     }
 
-    // Getters and setters
+
+
+    @Override
+    public void flipToBackSide() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'flipToBackSide'");
+    }
+
+
+
+    @Override
+    public boolean isFrontSide() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isFrontSide'");
+    }
+
+
+
+    @Override
+    public boolean isBackSide() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isBackSide'");
+    }
+
+    
 }
