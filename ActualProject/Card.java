@@ -1,14 +1,24 @@
 package ActualProject;
 
-public class Card {
+public class Card implements CardInterface {
     private String name;
-    private String region;
     private int value;
     private String description;
 
+    @Override
+    public String getBackside() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getFrontside() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     public Card(String name, String region, int value, String description) {
         this.name = name;
-        this.region = region;
         this.value = value;
         this.description = description;
     }

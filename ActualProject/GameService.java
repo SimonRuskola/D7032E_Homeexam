@@ -1,6 +1,20 @@
 package ActualProject;
 
-public interface GameService {
-    void startGame();
-    void endGame();
+public class GameService implements GameServiceInterface {
+    private Game game;
+
+    public GameServiceImpl(Game game) {
+        this.game = game;
+    }
+
+    @Override
+    public void startGame() {
+        // Implement game start logic
+    }
+
+    @Override
+    public void endGame() {
+        // Implement game end logic
+    }
+
 }
