@@ -1,60 +1,47 @@
 package ActualProject;
 
 public class Card implements CardInterface {
-    private String content;
+    private String frontSide;
+    private String backSide;
+    private boolean flipped = false;
     
 
-    public Card(String content) {
-        this.content = content;
+    public Card(String frontSide, String backSide) {
+        this.frontSide = frontSide;
+        this.backSide = backSide;
     }
-
 
 
     @Override
-    public String getContent() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getContent'");
+    public void flipCard() {
+        flipped = !flipped;
     }
 
+    @Override
+    public boolean isFlipped() {
+        return flipped;
+    }
 
 
     @Override
-    public void setContent(String content) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setContent'");
+    public String getFrontSide() {
+        return frontSide;
     }
-
-
 
     @Override
-    public void flipToFrontSide() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'flipToFrontSide'");
+    public String getBackSide() {
+        return backSide;
     }
-
-
 
     @Override
-    public void flipToBackSide() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'flipToBackSide'");
+    public void setFrontSide(String frontSide) {
+        this.frontSide = frontSide;
     }
-
-
 
     @Override
-    public boolean isFrontSide() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isFrontSide'");
+    public void setBackSide(String backSide) {
+        this.backSide = backSide;
     }
-
-
-
-    @Override
-    public boolean isBackSide() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isBackSide'");
-    }
-
+    
     
 }

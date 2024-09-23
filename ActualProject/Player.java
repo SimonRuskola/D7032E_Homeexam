@@ -1,29 +1,37 @@
+
 package ActualProject;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 
 
-public class Player {
-    private int playerID;
-    private boolean online;
-    private boolean isBot;
-    private Socket connection;
-    private ObjectInputStream inFromClient;
-    private ObjectOutputStream outToClient;
-    private ArrayList<String> region = new ArrayList<>();
-    private ArrayList<Card> hand = new ArrayList<>();
-    private int score = 0;
+public class Player implements PlayerInterface {
 
-    public Player(int playerID, boolean isBot, Socket connection, ObjectInputStream inFromClient, ObjectOutputStream outToClient) {
+    private int playerID;
+    private boolean isBot;
+    private ArrayList<CardInterface> hand;
+
+    public Player(int playerID, boolean isBot) {
         this.playerID = playerID;
         this.isBot = isBot;
-        this.connection = connection;
-        this.inFromClient = inFromClient;
-        this.outToClient = outToClient;
-        this.online = connection != null;
+        this.hand = new ArrayList<>();
     }
 
-    // Getters and setters
+	@Override
+	public boolean isBot() {
+		return this.isBot;
+	}
+
+	@Override
+	public void addCardToHand(CardInterface card) {
+		hand.add(card);
+	}
+
+	@Override
+	public int getPlayerID() {
+		return this.playerID;
+	}
+
+	@Override
+	public ArrayList<CardInterface> getHand() {
+		return this.hand;
+	}
 }

@@ -3,16 +3,16 @@ package ActualProject;
 
 public interface CardInterface {
    // Getters
-   String getContent();
+   String getFrontSide();
+   String getBackSide();
    
    // Setters
-   void setContent(String content);
+   void setFrontSide(String frontSide);
+   void setBackSide(String backSide);
    
     // Flip methods
-    void flipToFrontSide();
-    void flipToBackSide();
+    void flipCard();
 
     // Utility methods
-    boolean isFrontSide();
-    boolean isBackSide();
+    boolean isFlipped();
 }
