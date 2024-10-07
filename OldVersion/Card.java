@@ -4,6 +4,10 @@ public class Card implements CardInterface {
     private String frontSide;
     private String backSide;
     private boolean flipped = false;
+
+    public enum Vegetable {
+        PEPPER, LETTUCE, CARROT, CABBAGE, ONION, TOMATO
+    }
     
 
     public Card(String frontSide, String backSide) {

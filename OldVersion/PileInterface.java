@@ -2,6 +2,7 @@ package ActualProject;
 
 public interface PileInterface {
     public void shuffle();
-    public CardInterface drawCard();
+    public CardInterface drawTopCard();
+    public CardInterface drawBottomCard();
     public int getSize();
 }
