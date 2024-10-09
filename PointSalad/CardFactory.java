@@ -12,14 +12,13 @@ import org.json.JSONObject;
 
 public class CardFactory implements CardFactoryInterface {
     
-    private int numberPlayers;
 
-    public CardFactory(int numberPlayers) {
-        this.numberPlayers = numberPlayers;
+    public CardFactory() {
+        
     }
 
     @Override
-    public ArrayList<PileInterface> createPile() {
+    public ArrayList<PileInterface> createPile(int numberPlayers) {
 
         ArrayList<PileInterface> piles = new ArrayList<>();
 
@@ -73,7 +72,7 @@ public class CardFactory implements CardFactoryInterface {
 
 		    
 
-		    int cardsPerVeggie = this.numberPlayers/2 * 6;
+		    int cardsPerVeggie = numberPlayers/2 * 6;
             //int cardsPerVeggie = 3;
 
             System.out.println("cardsPerVeggie: " + cardsPerVeggie);

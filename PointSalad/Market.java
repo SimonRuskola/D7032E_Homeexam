@@ -2,30 +2,23 @@ package PointSalad;
 import java.util.ArrayList;
 
 
-public class Market {
-    private int nrPlayers;
+public class Market implements MarketInterface {
     private ArrayList<PileInterface> piles = new ArrayList<>(3);
     private CardFactoryInterface cardFactory;
     private ArrayList<CardInterface> cardsOnTable = new ArrayList<CardInterface>(6);
 
-    public Market(int nrPlayers, CardFactoryInterface cardFactory) {
+    public Market(CardFactoryInterface cardFactory) {
         this.cardFactory = cardFactory;
-        this.nrPlayers = nrPlayers;
-        if (nrPlayers < 1 || nrPlayers > 6) {
-            throw new IllegalArgumentException("Invalid number of players");
-        } 
+        
 
         for (int i = 0; i < 6; i++) {
             cardsOnTable.add(null);
         }
-        setPiles();
-        setCardOnTable();
 
     }
 
-    public void setPiles() {
-       piles = this.cardFactory.createPile();
-
+    public void setPiles(int playerCount) {
+        this.piles = this.cardFactory.createPile(playerCount);
     }
 
     public void setCardOnTable() {
@@ -65,8 +58,6 @@ public class Market {
 
 
 
-
-
     public void printMarketPiles() {
         for (int i = 0; i < piles.size(); i++) {
             System.out.println("Pile " + i + ": ");
@@ -77,22 +68,27 @@ public class Market {
     }
 
 
-    public void printMarket() {
-        // Print cards on the table
-        System.out.println("Cards on the table:");
+    public String printMarket() {
+        StringBuilder marketString = new StringBuilder();
+    
+        // Append cards on the table
+        marketString.append("Cards on the table:\n");
         for (CardInterface card : cardsOnTable) {
-            System.out.println(card.toString());
+            marketString.append(card.toString()).append("\n");
         }
-
-    // Print top cards of the piles
-        System.out.println("\nTop cards of the piles:");
+    
+        // Append top cards of the piles
+        marketString.append("\nTop cards of the piles:\n");
         for (PileInterface pile : piles) {
             CardInterface topCard = pile.drawTopCard();
             if (topCard != null) {
-                System.out.println(topCard.toString());
+                marketString.append(topCard.toString()).append("\n");
             } else {
-                System.out.println("Pile is empty");}
+                marketString.append("Pile is empty\n");
+            }
         }
+    
+        return marketString.toString();
     }
 
 }

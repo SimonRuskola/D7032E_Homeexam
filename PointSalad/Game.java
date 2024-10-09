@@ -6,9 +6,11 @@ public class Game {
 
         int numberPlayers = 2;
 
+        CardFactory cardFactory = new CardFactory();
+        Market market = new Market(cardFactory);
+        GameService gameService = new GameService(market);
 
-        CardFactory cardFactory = new CardFactory(numberPlayers);
-        Market market = new Market(numberPlayers, cardFactory);
+        
         market.printMarketPiles();
         market.printMarket();
     }
