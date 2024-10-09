@@ -1,4 +1,4 @@
-package ActualProject;
+package OldVersion;
 
 public class Card implements CardInterface {
     private String frontSide;
