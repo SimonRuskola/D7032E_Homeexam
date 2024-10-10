@@ -9,4 +9,5 @@ public interface PlayerInterface {
     boolean isBot();
     void sendMessage(Object message);
     String readMessage();
+
 }
