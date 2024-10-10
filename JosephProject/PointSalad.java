@@ -502,7 +502,7 @@ public class PointSalad {
 			numberOfBots = in.nextInt();
 		}
 		else {
-			//check if args[0] is a String (ip address) or an integer (number of players)
+			//check if args[0] is a String (ip addres1s) or an integer (number of players)
 			if(args[0].matches("\\d+")) {
 				numberPlayers = Integer.parseInt(args[0]);
 				numberOfBots = Integer.parseInt(args[1]);

@@ -20,8 +20,8 @@ public class GameService{
 
 	public GameService(MarketInterface market) {
 		this.market = market;
-		market.setPiles(2);
-        market.setCardOnTable();
+		market.setPiles(2); // should be changed to number of players
+        market.setCardsOnTable();
 
 	}
 
@@ -47,6 +47,9 @@ public class GameService{
 
 		while (!isGameOver) {
 			playTurn(currentPlayer);
+
+			currentPlayerIndex++;
+			currentPlayer = players.get(currentPlayerIndex % players.size());
 			
 		}
 
@@ -60,6 +63,36 @@ public class GameService{
 			currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
 			currentPlayer.sendMessage("\nThe piles are: ");
 			currentPlayer.sendMessage(market.printMarket());
+
+
+			boolean validInput = false;
+			while(!validInput){
+				currentPlayer.sendMessage("\n\nTake either one point card or up to two vegetable cards.\n");
+				String input = currentPlayer.readMessage();
+				if (input.length() == 1) {
+					int pileIndex = Integer.parseInt(input);
+					if (pileIndex >= 0 && pileIndex < 3) {
+						CardInterface card = market.getCardFromPile(pileIndex);
+						if (card != null) {
+							currentPlayer.addCardToHand(card);
+							validInput = true;
+						}
+					}
+				} else if (input.length() == 2) {
+					int firstIndex = Character.getNumericValue(input.charAt(0));
+					int secondIndex = Character.getNumericValue(input.charAt(1));
+					if (firstIndex >= 0 && firstIndex < market.getTableSize() && secondIndex >= 0 && secondIndex < market.getTableSize() && firstIndex != secondIndex) {
+						CardInterface card1 = market.getCardFromTable(firstIndex);
+						CardInterface card2 = market.getCardFromTable(secondIndex);
+						if (card1 != null && card2 != null) {
+							currentPlayer.addCardToHand(card1);
+							currentPlayer.addCardToHand(card2);
+							market.setCardsOnTable();							
+							validInput = true;
+						}
+					}
+				}
+			}
 
 
 

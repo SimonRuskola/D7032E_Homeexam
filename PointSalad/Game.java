@@ -9,10 +9,11 @@ public class Game {
         CardFactory cardFactory = new CardFactory();
         Market market = new Market(cardFactory);
         GameService gameService = new GameService(market);
+        gameService.startGame();
 
-        
-        market.printMarketPiles();
-        market.printMarket();
+        //market.setPiles(numberPlayers);
+        //market.setCardOnTable();
+        //System.out.println(market.printMarket());
     }
    
     

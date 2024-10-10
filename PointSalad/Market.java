@@ -21,13 +21,14 @@ public class Market implements MarketInterface {
         this.piles = this.cardFactory.createPile(playerCount);
     }
 
-    public void setCardOnTable() {
+    public void setCardsOnTable() {
         for (int i = 0; i < cardsOnTable.size(); i++) {
             if (cardsOnTable.get(i) == null) {
                 int pileIndex = i / 2;
                 PileInterface pile = piles.get(pileIndex);
                 CardInterface card = pile.drawTopCard();
                 if (card != null) {
+                    card.flipCard();
                     cardsOnTable.set(i, card);
                 } else {
                     // If the pile is empty, draw from the bottom of the pile with the most cards
@@ -35,12 +36,30 @@ public class Market implements MarketInterface {
                     if (maxPile != null) {
                         card = maxPile.drawBottomCard();
                         if (card != null) {
+                            card.flipCard();
                             cardsOnTable.set(i, card);
                         }
                     }
                 }
             }
         }
+    }
+    public int getTableSize() {
+        return cardsOnTable.size();
+    }
+
+    public CardInterface getCardFromTable(int index) {
+        CardInterface card = cardsOnTable.get(index);
+        if (card != null) {
+            cardsOnTable.set(index, null);
+        }
+        return card;
+    }
+
+    public CardInterface getCardFromPile(int index) {
+        PileInterface pile = piles.get(index);
+        CardInterface card = pile.drawTopCard();
+        return card;
     }
 
     private PileInterface getMaxPile() {
@@ -68,19 +87,25 @@ public class Market implements MarketInterface {
     }
 
 
-    public String printMarket() {
+    public String printMarket() { //return a string of the market
         StringBuilder marketString = new StringBuilder();
     
         // Append cards on the table
         marketString.append("Cards on the table:\n");
+        int cardIndex = 0;
         for (CardInterface card : cardsOnTable) {
-            marketString.append(card.toString()).append("\n");
+            if (card == null) {
+                marketString.append(cardIndex + ": Slot is empty\n");
+            } else {
+                marketString.append(cardIndex + ": " + card.toString()).append("\n");
+            }
+            cardIndex++;
         }
     
         // Append top cards of the piles
         marketString.append("\nTop cards of the piles:\n");
         for (PileInterface pile : piles) {
-            CardInterface topCard = pile.drawTopCard();
+            CardInterface topCard = pile.getTopCard();
             if (topCard != null) {
                 marketString.append(topCard.toString()).append("\n");
             } else {
