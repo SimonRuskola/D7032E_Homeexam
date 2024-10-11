@@ -106,8 +106,10 @@ public class GameService{
 
 
 		for (CardInterface criteriaCard : criteriaCards) {
-			
-				String criteria = criteriaCard.toString();
+
+			    
+				String criteriaString = criteriaCard.toString(); 										// example "CABBAGE + CABBAGE + CABBAGE = 8 (CARROT)"
+				String criteria = criteriaString.replaceAll("\\s*\\([^\\)]*\\)", ""); // example "CABBAGE + CABBAGE + CABBAGE = 8"     
 			
 				String[] parts = criteria.split(",");
 				//ID 18
@@ -209,7 +211,7 @@ public class GameService{
 							}
 						}
 						if(countSameKind > 1) {
-							System.out.print("ID5/ID11: "+ ((int)countVegetables(hand, Card.Vegetable.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
+							//System.out.print("ID5/ID11: "+ ((int)countVegetables(hand, Card.Vegetable.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
 							totalScore +=  ((int)countVegetables(hand, Card.Vegetable.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim());
 						} else {
 							for(int i = 0; i < vegs.length; i++) {
@@ -253,7 +255,7 @@ public class GameService{
 		}else{
 			currentPlayer.sendMessage("\n\n****************************************************************\nIt's your turn! Your hand is:\n");
 			currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
-			currentPlayer.sendMessage("\nThe piles are: ");
+			//currentPlayer.sendMessage("\nThe piles are: ");
 			currentPlayer.sendMessage(market.printMarket());
 
 
@@ -287,6 +289,7 @@ public class GameService{
 			}
 
 			validInput = false;
+			
 
 			while (validInput == false) {
 				currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
@@ -309,6 +312,8 @@ public class GameService{
 				}
 			}
 
+	
+
 
 
 
@@ -327,7 +332,7 @@ public class GameService{
 	public void isGameOver() {
 
 		for (int i = 0; i < market.getTableSize(); i++) {
-			if (market.getCardFromTable(i) != null) {
+			if (market.copyCardFromTable(i) != null) {
 				return;
 			}
 		}

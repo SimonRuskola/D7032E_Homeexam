@@ -56,6 +56,11 @@ public class Market implements MarketInterface {
         return card;
     }
 
+    public CardInterface copyCardFromTable(int index) {
+        CardInterface card = cardsOnTable.get(index);
+        return card;  
+    }
+
     public CardInterface getCardFromPile(int index) {
         PileInterface pile = piles.get(index);
         CardInterface card = pile.drawTopCard();
@@ -104,13 +109,15 @@ public class Market implements MarketInterface {
     
         // Append top cards of the piles
         marketString.append("\nTop cards of the piles:\n");
+        cardIndex = 0;
         for (PileInterface pile : piles) {
             CardInterface topCard = pile.getTopCard();
             if (topCard != null) {
-                marketString.append(topCard.toString()).append("\n");
+                marketString.append(cardIndex + ": " +topCard.toString()).append("\n");
             } else {
-                marketString.append("Pile is empty\n");
+                marketString.append(cardIndex + ": Slot is empty\n");
             }
+            cardIndex++;
         }
     
         return marketString.toString();

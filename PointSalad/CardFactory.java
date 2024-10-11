@@ -75,7 +75,7 @@ public class CardFactory implements CardFactoryInterface {
 		    int cardsPerVeggie = numberPlayers/2 * 6;
             //int cardsPerVeggie = 3;
 
-            System.out.println("cardsPerVeggie: " + cardsPerVeggie);
+            //System.out.println("cardsPerVeggie: " + cardsPerVeggie);
         
 		    ArrayList<CardInterface> deck = new ArrayList<>();
 		    for(int i = 0; i < cardsPerVeggie; i++) {

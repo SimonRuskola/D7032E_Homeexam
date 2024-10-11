@@ -9,9 +9,7 @@ public class Card implements CardInterface {
         PEPPER, LETTUCE, CARROT, CABBAGE, ONION, TOMATO
     }
 
-    public Card() {
-	}
-
+  
     public Card(Vegetable vegetable, String criteria) {
 		this.backSide = vegetable;
 		this.frontSide = criteria;
