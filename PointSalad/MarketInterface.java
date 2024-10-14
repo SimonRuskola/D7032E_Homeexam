@@ -1,4 +1,5 @@
 package PointSalad;
+import PointSalad.Cards.CardInterface;
 
 public interface MarketInterface {
     public String printMarket();

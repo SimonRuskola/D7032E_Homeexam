@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Scanner;
 import org.json.JSONArray;
 
+import PointSalad.Cards.Card;
+import PointSalad.Cards.CardInterface;
+import PointSalad.Cards.CardType;
+
 public class GameService{
     
     private MarketInterface market;
@@ -81,7 +85,7 @@ public class GameService{
 		return total;
 	}
 
-	public int countVegetables(ArrayList<CardInterface> hand, Card.Vegetable vegetable) {
+	public int countVegetables(ArrayList<CardInterface> hand, CardType vegetable) {
 		int total = 0;
 		for (CardInterface card : hand) {
 			if (card.isFlipped() && card.getBackSide() == vegetable) {
@@ -139,7 +143,7 @@ public class GameService{
 						int addScore = Integer.parseInt(expr[0].trim());
 						if(expr[1].indexOf("MISSING")>=0) {
 							int missing = 0;
-							for (Card.Vegetable vegetable : Card.Vegetable.values()) {
+							for (CardType vegetable : CardType.values()) {
 								if(countVegetables(hand, vegetable) == 0) {
 									missing++;
 								}
@@ -151,7 +155,7 @@ public class GameService{
 						else {
 							int atLeastPerVegType = Integer.parseInt(expr[1].substring(expr[1].indexOf(">=")+2).trim());
 							int totalType = 0;
-							for(Card.Vegetable vegetable : Card.Vegetable.values()) {
+							for(CardType vegetable : CardType.values()) {
 								int countVeg = countVegetables(hand, vegetable);
 								if(countVeg >= atLeastPerVegType) {
 									totalType++;
@@ -164,7 +168,7 @@ public class GameService{
 					}
 					if(criteria.indexOf("SET")>=0) {
 						int addScore = 12;
-						for (Card.Vegetable vegetable : Card.Vegetable.values()) {
+						for (CardType vegetable : CardType.values()) {
 							int countVeg = countVegetables(hand, vegetable);
 							if(countVeg == 0) {
 								addScore = 0;
@@ -179,16 +183,16 @@ public class GameService{
 				else if((criteria.indexOf("MOST")>=0) || (criteria.indexOf("FEWEST")>=0)) { //ID1, ID2
 					int vegIndex = criteria.indexOf("MOST")>=0 ? criteria.indexOf("MOST")+5 : criteria.indexOf("FEWEST")+7;
 					String veg = criteria.substring(vegIndex, criteria.indexOf("=")).trim();
-					int countVeg = countVegetables(hand, Card.Vegetable.valueOf(veg));
+					int countVeg = countVegetables(hand, CardType.valueOf(veg));
 					int nrVeg = countVeg;
 					for(Player p : this.players) {
 						if(p.getPlayerID() != player.getPlayerID()) {
-							int playerVeg = countVegetables(p.getHand(), Card.Vegetable.valueOf(veg));
+							int playerVeg = countVegetables(p.getHand(), CardType.valueOf(veg));
 							if((criteria.indexOf("MOST")>=0) && (playerVeg > nrVeg)) {
-								nrVeg = countVegetables(p.getHand(), Card.Vegetable.valueOf(veg));
+								nrVeg = countVegetables(p.getHand(), CardType.valueOf(veg));
 							}
 							if((criteria.indexOf("FEWEST")>=0) && (playerVeg < nrVeg)) {
-								nrVeg = countVegetables(p.getHand(), Card.Vegetable.valueOf(veg));
+								nrVeg = countVegetables(p.getHand(), CardType.valueOf(veg));
 							}
 						}
 					}
@@ -211,11 +215,11 @@ public class GameService{
 							}
 						}
 						if(countSameKind > 1) {
-							//System.out.print("ID5/ID11: "+ ((int)countVegetables(hand, Card.Vegetable.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
-							totalScore +=  ((int)countVegetables(hand, Card.Vegetable.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim());
+							//System.out.print("ID5/ID11: "+ ((int)countVegetables(hand, CardType.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
+							totalScore +=  ((int)countVegetables(hand, CardType.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim());
 						} else {
 							for(int i = 0; i < vegs.length; i++) {
-								nrVeg[i] = countVegetables(hand, Card.Vegetable.valueOf(vegs[i].trim()));
+								nrVeg[i] = countVegetables(hand, CardType.valueOf(vegs[i].trim()));
 							}
 							//find the lowest number in the nrVeg array
 							int min = nrVeg[0];
@@ -230,15 +234,15 @@ public class GameService{
 					}
 					else if(parts[0].indexOf("=")>=0) { //ID3
 						String veg = parts[0].substring(0, parts[0].indexOf(":"));
-						int countVeg = countVegetables(hand, Card.Vegetable.valueOf(veg));
+						int countVeg = countVegetables(hand, CardType.valueOf(veg));
 						//System.out.print("ID3: "+((countVeg%2==0)?7:3) + " ");
 						totalScore += (countVeg%2==0)?7:3;
 					}
 					else { //ID4, ID8, ID9, ID10, ID14, ID15, ID16, ID17
 						for(int i = 0; i < parts.length; i++) {
 							String[] veg = parts[i].split("/");
-							//System.out.print("ID4/ID8/ID9/ID10/ID14/ID15/ID16/ID17: " + Integer.parseInt(veg[0].trim()) * countVegetables(hand, Card.Vegetable.valueOf(veg[1].trim())) + " ");
-							totalScore += Integer.parseInt(veg[0].trim()) * countVegetables(hand, Card.Vegetable.valueOf(veg[1].trim()));
+							//System.out.print("ID4/ID8/ID9/ID10/ID14/ID15/ID16/ID17: " + Integer.parseInt(veg[0].trim()) * countVegetables(hand, CardType.valueOf(veg[1].trim())) + " ");
+							totalScore += Integer.parseInt(veg[0].trim()) * countVegetables(hand, CardType.valueOf(veg[1].trim()));
 						}
 					}
 				}

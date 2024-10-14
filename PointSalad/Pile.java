@@ -1,10 +1,11 @@
 package PointSalad;
 import java.util.Collections;
+import PointSalad.Cards.CardInterface;
 import java.util.ArrayList;
+
 
 public class Pile implements PileInterface {
     private ArrayList<CardInterface> cards;
-    //private ArrayList<CardInterface> cardsOnTable = new ArrayList<CardInterface>();
 
     public Pile(ArrayList<CardInterface> arrayList) {
         this.cards = arrayList;

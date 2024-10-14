@@ -1,5 +1,6 @@
 package PointSalad;
 
+import PointSalad.Cards.CardFactory;
 
 public class Game {
     public static void main(String[] args) {

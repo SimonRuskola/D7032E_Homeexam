@@ -6,6 +6,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
+import PointSalad.Cards.CardInterface;
+
 
 public class Player implements PlayerInterface {
 

@@ -1,6 +1,8 @@
 package PointSalad;
 import java.util.ArrayList;
 
+import PointSalad.Cards.CardInterface;
+
 public interface PlayerInterface {
 
     int getPlayerID();
