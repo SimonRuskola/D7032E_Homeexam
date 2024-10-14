@@ -1,6 +1,5 @@
-package PointSalad;
+package PointSalad.Cards;
 import java.util.Collections;
-import PointSalad.Cards.CardInterface;
 import java.util.ArrayList;
 
 

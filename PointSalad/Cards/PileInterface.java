@@ -1,7 +1,5 @@
-package PointSalad;
+package PointSalad.Cards;
 import java.util.ArrayList;
-
-import PointSalad.Cards.CardInterface;
 
 public interface PileInterface {
     public void shuffle();
