@@ -1,6 +1,7 @@
 package PointSalad;
 import java.util.ArrayList;
 import PointSalad.Cards.CardInterface;
+import PointSalad.Cards.PileInterface;
 import PointSalad.Cards.CardFactoryInterface;
 
 public class Market implements MarketInterface {
