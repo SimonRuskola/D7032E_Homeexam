@@ -1,4 +1,4 @@
-package PointSalad;
+package PointSalad.Cards;
 
 
 public interface CardInterface {
@@ -19,4 +19,6 @@ public interface CardInterface {
     boolean isFlipped();
 
     String toString();
+
+   
 }

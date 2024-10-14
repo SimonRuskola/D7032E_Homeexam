@@ -1,16 +1,18 @@
-package PointSalad;
+package PointSalad.Cards;
+
 
 public class Card implements CardInterface {
     private Object frontSide;
     private Object backSide;
     private boolean flipped = false;
 
-    protected enum Vegetable {
+    /* public enum Vegetable {
         PEPPER, LETTUCE, CARROT, CABBAGE, ONION, TOMATO
-    }
+    } */
+   
 
   
-    public Card(Vegetable vegetable, String criteria) {
+    public Card(CardTypeInterface vegetable, String criteria) {
 		this.backSide = vegetable;
 		this.frontSide = criteria;
 	}

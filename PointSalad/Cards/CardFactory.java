@@ -1,4 +1,4 @@
-package PointSalad;
+package PointSalad.Cards;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,6 +9,9 @@ import java.util.Scanner;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import PointSalad.Pile;
+import PointSalad.PileInterface;
 
 public class CardFactory implements CardFactoryInterface {
     
@@ -49,12 +52,12 @@ public class CardFactory implements CardFactoryInterface {
                 JSONObject criteriaObj = cardJson.getJSONObject("criteria");
 
                 // Add each vegetable card to the deck with its corresponding criteria
-                deckPepper.add(new Card(Card.Vegetable.PEPPER, criteriaObj.getString("PEPPER")));
-                deckLettuce.add(new Card(Card.Vegetable.LETTUCE, criteriaObj.getString("LETTUCE")));
-                deckCarrot.add(new Card(Card.Vegetable.CARROT, criteriaObj.getString("CARROT")));
-                deckCabbage.add(new Card(Card.Vegetable.CABBAGE, criteriaObj.getString("CABBAGE")));
-                deckOnion.add(new Card(Card.Vegetable.ONION, criteriaObj.getString("ONION")));
-                deckTomato.add(new Card(Card.Vegetable.TOMATO, criteriaObj.getString("TOMATO")));
+                deckPepper.add(new Card(CardType.PEPPER, criteriaObj.getString("PEPPER")));
+                deckLettuce.add(new Card(CardType.LETTUCE, criteriaObj.getString("LETTUCE")));
+                deckCarrot.add(new Card(CardType.CARROT, criteriaObj.getString("CARROT")));
+                deckCabbage.add(new Card(CardType.CABBAGE, criteriaObj.getString("CABBAGE")));
+                deckOnion.add(new Card(CardType.ONION, criteriaObj.getString("ONION")));
+                deckTomato.add(new Card(CardType.TOMATO, criteriaObj.getString("TOMATO")));
             }
 
             } catch (IOException e) {
