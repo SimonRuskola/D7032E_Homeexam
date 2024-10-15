@@ -1,7 +1,5 @@
-package PointSalad.Cards;
+package PointSalad.src.Cards;
 import java.util.ArrayList;
-
-import PointSalad.PileInterface;
 
 public interface CardFactoryInterface {
     public ArrayList<PileInterface> createPile(int playerCount);

@@ -1,4 +1,4 @@
-package PointSalad.Cards;
+package PointSalad.src.Cards;
 
 
 public class Card implements CardInterface {

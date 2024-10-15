@@ -1,8 +1,10 @@
-package PointSalad;
+package PointSalad.src;
 import java.util.ArrayList;
-import PointSalad.Cards.CardInterface;
-import PointSalad.Cards.PileInterface;
-import PointSalad.Cards.CardFactoryInterface;
+
+import PointSalad.src.Cards.CardFactoryInterface;
+import PointSalad.src.Cards.CardInterface;
+import PointSalad.src.Cards.Pile;
+import PointSalad.src.Cards.PileInterface;
 
 public class Market implements MarketInterface {
     private ArrayList<PileInterface> piles = new ArrayList<>(3);
@@ -61,6 +63,14 @@ public class Market implements MarketInterface {
     public CardInterface copyCardFromTable(int index) {
         CardInterface card = cardsOnTable.get(index);
         return card;  
+    }
+
+    public ArrayList<PileInterface> copyPiles() {
+        return piles;
+    }
+
+    public ArrayList<CardInterface> copyCardsFromTable() {
+        return cardsOnTable;  
     }
 
     public CardInterface getCardFromPile(int index) {

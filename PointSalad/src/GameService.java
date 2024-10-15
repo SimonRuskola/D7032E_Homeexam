@@ -1,4 +1,4 @@
-package PointSalad;
+package PointSalad.src;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,19 +8,23 @@ import java.util.List;
 import java.util.Scanner;
 import org.json.JSONArray;
 
-import PointSalad.Cards.Card;
-import PointSalad.Cards.CardInterface;
-import PointSalad.Cards.CardType;
+import PointSalad.src.Cards.Card;
+import PointSalad.src.Cards.CardInterface;
+import PointSalad.src.Cards.CardType;
+
+import PointSalad.src.Network.Client;
+import PointSalad.src.Network.Server;
 
 public class GameService{
     
     private MarketInterface market;
 	private boolean isGameOver = false;
-	private ArrayList<Player> players = new ArrayList<Player>();
+	//private ArrayList<Player> players = new ArrayList<Player>();
 	private int numberPlayers = 0;
 	private int numberOfBots = 0;
 	private int currentPlayerIndex;
 	private PlayerInterface currentPlayer;
+	private Server server;
 
 	public GameService(MarketInterface market) {
 		this.market = market;
@@ -29,25 +33,49 @@ public class GameService{
 
 	}
 
-	public void startGame() {
+	public void startGame(String[] args) {
 
-		System.out.println("Please enter the number of players (1-6): ");
-		Scanner in = new Scanner(System.in);
-		numberPlayers = in.nextInt();
-		System.out.println("Please enter the number of bots (0-5): ");
-		numberOfBots = in.nextInt();
+		if(args.length == 0){
+				System.out.println("Please enter the number of players (1-6): ");
+				Scanner in = new Scanner(System.in);
+				numberPlayers = in.nextInt();
+				System.out.println("Please enter the number of bots (0-5): ");
+				numberOfBots = in.nextInt();
+			}else{
+			
+			//check if args[0] is a String (ip addres1s) or an integer (number of players)
+			if(args[0].matches("\\d+")) {
+				numberPlayers = Integer.parseInt(args[0]);
+				numberOfBots = Integer.parseInt(args[1]);
+			}
+			else {
+				try {
+					Client client = new Client(args[0]);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
 
 		if ((numberPlayers+numberOfBots) < 1 || (numberPlayers+numberOfBots) > 6) {
             throw new IllegalArgumentException("Invalid number of players");
         } 
 
-		for (int i = 0; i < numberPlayers; i++) {
-			this.players.add(new Player(i, false));
+		try {
+			server = new Server(numberPlayers, numberOfBots, market);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
+		
+
+		//for (int i = 0; i < numberPlayers; i++) {
+		//	server.getPlayers().add(new Player(i, false));
+		//}
 
 		// Set random starting player
-		this.currentPlayerIndex = (int) (Math.random() * (players.size()));
-		this.currentPlayer = players.get(currentPlayerIndex);
+		this.currentPlayerIndex = (int) (Math.random() * (numberPlayers+numberOfBots));
+		this.currentPlayer = server.getPlayer(currentPlayerIndex);
 
 		while (!isGameOver) {
 			playTurn(currentPlayer);
@@ -57,7 +85,7 @@ public class GameService{
 			currentPlayer.sendMessage("\n\nYour score is: " + score);
 			
 			currentPlayerIndex++;
-			currentPlayer = players.get(currentPlayerIndex % players.size());
+			currentPlayer = server.getPlayers().get(currentPlayerIndex % server.getPlayers().size());
 
 			// Check if the game is over if all cards on table are null
 			isGameOver();
@@ -70,6 +98,7 @@ public class GameService{
 	}
 
 	public void endGame() {
+		System.out.println("Game over!");
 		// Calculate scores
 		// Display scores
 		// Display winner
@@ -121,7 +150,7 @@ public class GameService{
 					if(criteria.indexOf("TOTAL")>=0) {
 						int countVeg = countTotalVegetables(hand);
 						int thisHandCount = countVeg;
-						for(Player p : players) {
+						for(PlayerInterface p : server.getPlayers()) {
 							if(p.getPlayerID() != player.getPlayerID()) {
 								int playerVeg = countTotalVegetables(p.getHand());
 								if((criteria.indexOf("MOST")>=0) && (playerVeg > countVeg)) {
@@ -185,7 +214,7 @@ public class GameService{
 					String veg = criteria.substring(vegIndex, criteria.indexOf("=")).trim();
 					int countVeg = countVegetables(hand, CardType.valueOf(veg));
 					int nrVeg = countVeg;
-					for(Player p : this.players) {
+					for(PlayerInterface p : server.getPlayers()) {
 						if(p.getPlayerID() != player.getPlayerID()) {
 							int playerVeg = countVegetables(p.getHand(), CardType.valueOf(veg));
 							if((criteria.indexOf("MOST")>=0) && (playerVeg > nrVeg)) {
@@ -254,9 +283,6 @@ public class GameService{
 	}
 
     public void playTurn(PlayerInterface currentPlayer) {
-		if (currentPlayer.isBot()) {
-			// Bot logic
-		}else{
 			currentPlayer.sendMessage("\n\n****************************************************************\nIt's your turn! Your hand is:\n");
 			currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
 			//currentPlayer.sendMessage("\nThe piles are: ");
@@ -289,12 +315,13 @@ public class GameService{
 							validInput = true;
 						}
 					}
-				}
+				} 
 			}
+
+
 
 			validInput = false;
 			
-
 			while (validInput == false) {
 				currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
 				currentPlayer.sendMessage("\nWould you like to turn a card (Y/N)\n");
@@ -316,17 +343,17 @@ public class GameService{
 				}
 			}
 
-	
-
-
-
-
-		}
 
 	}
 
 	public String displayHand(ArrayList<CardInterface> hand) {
+		
+		if (hand == null) {
+			return "Hand is empty";
+		}
+		
 		String handString = "";
+
 		for (int i = 0; i < hand.size(); i++) {
 			handString += i + ": " + hand.get(i).toString() + "\n";
 		}

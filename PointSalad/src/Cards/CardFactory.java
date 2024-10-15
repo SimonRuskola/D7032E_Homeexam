@@ -1,4 +1,4 @@
-package PointSalad.Cards;
+package PointSalad.src.Cards;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,9 +9,6 @@ import java.util.Scanner;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import PointSalad.Pile;
-import PointSalad.PileInterface;
 
 public class CardFactory implements CardFactoryInterface {
     

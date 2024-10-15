@@ -1,7 +1,7 @@
-package PointSalad;
+package PointSalad.src;
 import java.util.ArrayList;
 
-import PointSalad.Cards.CardInterface;
+import PointSalad.src.Cards.CardInterface;
 
 public interface PlayerInterface {
 

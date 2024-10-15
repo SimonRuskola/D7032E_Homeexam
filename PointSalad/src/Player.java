@@ -1,18 +1,17 @@
 
-package PointSalad;
+package PointSalad.src;
 import java.util.ArrayList;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-import PointSalad.Cards.CardInterface;
+import PointSalad.src.Cards.CardInterface;
 
 
 public class Player implements PlayerInterface {
 
     private int playerID;
-    private boolean isBot;
     private ArrayList<CardInterface> hand;
 	private Socket connection;
 	private ObjectInputStream inFromClient;
@@ -20,9 +19,8 @@ public class Player implements PlayerInterface {
 	private boolean online;
 	private Scanner in = new Scanner(System.in);
 
-    public Player(int playerID, boolean isBot, Socket connection, ObjectInputStream inFromClient, ObjectOutputStream outToClient) {
+    public Player(int playerID, Socket connection, ObjectInputStream inFromClient, ObjectOutputStream outToClient) {
         this.playerID = playerID;
-        this.isBot = isBot;
 		this.connection = connection; 
 		this.inFromClient = inFromClient; 
 		this.outToClient = outToClient;
@@ -35,15 +33,10 @@ public class Player implements PlayerInterface {
 
 	public Player(int playerID, boolean isBot){
 		this.playerID = playerID;
-		this.isBot = isBot;
 		this.hand = new ArrayList<CardInterface>();
 		this.online = false;
 	}
 
-	@Override
-	public boolean isBot() {
-		return this.isBot;
-	}
 
 	@Override
 	public void addCardToHand(CardInterface card) {
@@ -61,11 +54,14 @@ public class Player implements PlayerInterface {
 	}
 
 	public void sendMessage(Object message) {
-		if(online) {
-			try {outToClient.writeObject(message);} catch (Exception e) {}
-		} else if(!isBot){
-			System.out.println(message);                
+		if (!online) {
+			System.out.println(message);
 		}
+		else {
+			try {
+				outToClient.writeObject(message);
+			} catch (Exception e) {}
+		}            
 		return;
 	}
 
@@ -76,6 +72,11 @@ public class Player implements PlayerInterface {
 		else
 			try {word=in.nextLine();} catch(Exception e){}
 		return word;
+	}
+
+	@Override
+	public boolean isBot() {
+		return false;
 	}
 
 }

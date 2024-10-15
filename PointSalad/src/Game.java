@@ -1,6 +1,6 @@
-package PointSalad;
+package PointSalad.src;
 
-import PointSalad.Cards.CardFactory;
+import PointSalad.src.Cards.CardFactory;
 
 public class Game {
     public static void main(String[] args) {
@@ -10,7 +10,7 @@ public class Game {
         CardFactory cardFactory = new CardFactory();
         Market market = new Market(cardFactory);
         GameService gameService = new GameService(market);
-        gameService.startGame();
+        gameService.startGame(args);
 
         //market.setPiles(numberPlayers);
         //market.setCardOnTable();
