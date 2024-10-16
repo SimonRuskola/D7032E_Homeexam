@@ -18,7 +18,7 @@ public class Client {
         while(!nextMessage.contains("winner")){
             nextMessage = (String) inFromServer.readObject();
             System.out.println(nextMessage);
-            if(nextMessage.contains("Take") || nextMessage.contains("into")) {
+            if(nextMessage.contains("Take") || nextMessage.contains("into") || nextMessage.contains("turn")) {
                 Scanner in = new Scanner(System.in);
                 outToServer.writeObject(in.nextLine());
             } 

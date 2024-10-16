@@ -13,6 +13,7 @@ public class PlayerBot implements PlayerInterface{
     private ArrayList<CardInterface> hand;
     private MarketInterface market;
     private String nextChoise = null;
+    private String message;
 
     public PlayerBot(int playerID, MarketInterface market){
         this.playerID = playerID;
@@ -44,6 +45,7 @@ public class PlayerBot implements PlayerInterface{
     @Override
     public void sendMessage(Object message) {
         System.out.println(message);
+        this.message = (String) message;
     }
 
     @Override

@@ -33,11 +33,25 @@ public class GameService{
 
 	}
 
-	public void startGame(String[] args) {
+	public void startGame(String[] args2) {
+
+		Scanner in = new Scanner(System.in);
+		String[] args = new String[2];
+
+		System.out.println(args.length);
+
+		System.out.println("enter args[0]");
+		args[0] = in.nextLine();
+		System.out.println("enter args[1]");
+		args[1] = in.nextLine();
+
+		
+
+		
+
 
 		if(args.length == 0){
 				System.out.println("Please enter the number of players (1-6): ");
-				Scanner in = new Scanner(System.in);
 				numberPlayers = in.nextInt();
 				System.out.println("Please enter the number of bots (0-5): ");
 				numberOfBots = in.nextInt();
@@ -334,12 +348,12 @@ public class GameService{
 						currentPlayer.getHand().get(cardIndex).flipCard();
 						validInput = true;
 					} else {
-						currentPlayer.sendMessage("\n Please choose another card.\n");
+						currentPlayer.sendMessage("\n Please choose another card to turn.\n");
 					}
 				} else if (input.equals("N")) {
 					validInput = true;
 				} else {
-					currentPlayer.sendMessage("\nInvalid input. Please enter Y or N.\n");
+					currentPlayer.sendMessage("\nInvalid input. Please enter Y or N. Would you like to turn a card (Y/N) \n");
 				}
 			}
 
