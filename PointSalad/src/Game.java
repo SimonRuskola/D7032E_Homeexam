@@ -9,7 +9,8 @@ public class Game {
 
         CardFactory cardFactory = new CardFactory();
         Market market = new Market(cardFactory);
-        GameService gameService = new GameService(market);
+        GameConfig config = new GameConfig("PointSalad\\actions.json");
+        GameService gameService = new GameService(market, config);
         gameService.startGame(args);
 
         //market.setPiles(numberPlayers);

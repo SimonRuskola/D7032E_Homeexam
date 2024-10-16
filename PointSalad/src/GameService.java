@@ -15,6 +15,12 @@ import PointSalad.src.Cards.CardType;
 import PointSalad.src.Network.Client;
 import PointSalad.src.Network.Server;
 
+//import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+
 public class GameService{
     
     private MarketInterface market;
@@ -25,9 +31,11 @@ public class GameService{
 	private int currentPlayerIndex;
 	private PlayerInterface currentPlayer;
 	private Server server;
+	private GameConfig config;
 
-	public GameService(MarketInterface market) {
+	public GameService(MarketInterface market, GameConfig config) {
 		this.market = market;
+		this.config = config;
 		market.setPiles(2); // should be changed to number of players
         market.setCardsOnTable();
 
@@ -297,68 +305,100 @@ public class GameService{
 	}
 
     public void playTurn(PlayerInterface currentPlayer) {
-			currentPlayer.sendMessage("\n\n****************************************************************\nIt's your turn! Your hand is:\n");
-			currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
-			//currentPlayer.sendMessage("\nThe piles are: ");
-			currentPlayer.sendMessage(market.printMarket());
-
-
-			boolean validInput = false;
-			while(!validInput){
-				currentPlayer.sendMessage("\n\nTake either one point card or up to two vegetable cards.\n");
-				String input = currentPlayer.readMessage();
-				if (input.length() == 1) {
-					int pileIndex = Integer.parseInt(input);
-					if (pileIndex >= 0 && pileIndex < 3) {
-						CardInterface card = market.getCardFromPile(pileIndex);
-						if (card != null) {
-							currentPlayer.addCardToHand(card);
-							validInput = true;
-						}
-					}
-				} else if (input.length() == 2) {
-					int firstIndex = Character.getNumericValue(input.charAt(0));
-					int secondIndex = Character.getNumericValue(input.charAt(1));
-					if (firstIndex >= 0 && firstIndex < market.getTableSize() && secondIndex >= 0 && secondIndex < market.getTableSize() && firstIndex != secondIndex) {
-						CardInterface card1 = market.getCardFromTable(firstIndex);
-						CardInterface card2 = market.getCardFromTable(secondIndex);
-						if (card1 != null && card2 != null) {
-							currentPlayer.addCardToHand(card1);
-							currentPlayer.addCardToHand(card2);
-							market.setCardsOnTable();							
-							validInput = true;
-						}
-					}
-				} 
-			}
-
-
-
-			validInput = false;
 			
-			while (validInput == false) {
-				currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
-				currentPlayer.sendMessage("\nWould you like to turn a card (Y/N)\n");
-				String input = currentPlayer.readMessage();
-				if (input.equals("Y")) {
-					currentPlayer.sendMessage("\nWhich card would you like to turn?\n");
-					currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
-					int cardIndex = Integer.parseInt(currentPlayer.readMessage());
-					if (!currentPlayer.getHand().get(cardIndex).isFlipped() && cardIndex >= 0 && cardIndex < currentPlayer.getHand().size()) {
-						currentPlayer.getHand().get(cardIndex).flipCard();
-						validInput = true;
-					} else {
-						currentPlayer.sendMessage("\n Please choose another card to turn.\n");
-					}
-				} else if (input.equals("N")) {
-					validInput = true;
-				} else {
-					currentPlayer.sendMessage("\nInvalid input. Please enter Y or N. Would you like to turn a card (Y/N) \n");
-				}
-			}
-
 
 	}
+
+	private void sendInitialMessages(PlayerInterface currentPlayer) {
+        JSONObject action1 = config.getAction(0);
+        currentPlayer.sendMessage("\n\n****************************************************************\n" + action1.get("message") + "\n");
+        currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
+        currentPlayer.sendMessage(market.printMarket());
+    }
+
+	private boolean handleCardSelection(PlayerInterface currentPlayer) {
+        JSONObject action2 = config.getAction(1);
+        JSONObject rules = (JSONObject) action2.get("rules");
+
+        currentPlayer.sendMessage("\n\n" + action2.get("message") + "\n");
+        String input = currentPlayer.readMessage();
+        if (input.length() == 1) {
+            return handleSingleCardSelection(currentPlayer, input, rules);
+        } else if (input.length() == 2) {
+            return handleTwoCardSelection(currentPlayer, input, rules);
+        }
+        return false;
+    }
+
+	private boolean handleSingleCardSelection(PlayerInterface currentPlayer, String input, JSONObject rules) {
+        int pileIndex = Integer.parseInt(input);
+        int min = ((Long) ((JSONObject) rules.get("singleCard")).get("min")).intValue();
+        int max = ((Long) ((JSONObject) rules.get("singleCard")).get("max")).intValue();
+        if (pileIndex >= min && pileIndex <= max) {
+            CardInterface card = market.getCardFromPile(pileIndex);
+            if (card != null) {
+                currentPlayer.addCardToHand(card);
+                return true;
+            }
+        }
+        return false;
+    }
+
+	private boolean handleTwoCardSelection(PlayerInterface currentPlayer, String input, JSONObject rules) {
+        int firstIndex = Character.getNumericValue(input.charAt(0));
+        int secondIndex = Character.getNumericValue(input.charAt(1));
+        int min = ((Long) ((JSONObject) rules.get("twoCards")).get("min")).intValue();
+        int max = market.getTableSize();
+        if (firstIndex >= min && firstIndex < max && secondIndex >= min && secondIndex < max && firstIndex != secondIndex) {
+            CardInterface card1 = market.getCardFromTable(firstIndex);
+            CardInterface card2 = market.getCardFromTable(secondIndex);
+            if (card1 != null && card2 != null) {
+                currentPlayer.addCardToHand(card1);
+                currentPlayer.addCardToHand(card2);
+                market.setCardsOnTable();
+                return true;
+            }
+        }
+        return false;
+    }
+
+	private boolean handleCardTurn(PlayerInterface currentPlayer) {
+        JSONObject action3 = config.getAction(2);
+        JSONObject rules = (JSONObject) action3.get("rules");
+
+        currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
+        currentPlayer.sendMessage("\n" + action3.get("message") + "\n");
+        String input = currentPlayer.readMessage();
+        if (rules.get("yesNo").toString().contains(input)) {
+            if (input.equals("Y")) {
+                return handleCardFlip(currentPlayer, rules);
+            } else if (input.equals("N")) {
+                return true;
+            }
+        } else {
+            JSONObject action6 = config.getAction(5);
+            currentPlayer.sendMessage("\n" + action6.get("message") + "\n");
+        }
+        return false;
+    }
+
+	private boolean handleCardFlip(PlayerInterface currentPlayer, JSONObject rules) {
+        JSONObject action4 = config.getAction(3);
+        JSONObject action5 = config.getAction(4);
+
+        currentPlayer.sendMessage("\n" + action4.get("message") + "\n");
+        currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
+        int cardIndex = Integer.parseInt(currentPlayer.readMessage());
+        int min = ((Long) ((JSONObject) rules.get("cardIndex")).get("min")).intValue();
+        int max = currentPlayer.getHand().size();
+        if (!currentPlayer.getHand().get(cardIndex).isFlipped() && cardIndex >= min && cardIndex < max) {
+            currentPlayer.getHand().get(cardIndex).flipCard();
+            return true;
+        } else {
+            currentPlayer.sendMessage("\n" + action5.get("message") + "\n");
+        }
+        return false;
+    }
 
 	public String displayHand(ArrayList<CardInterface> hand) {
 		

@@ -1,0 +1,32 @@
+[
+    {
+      "message": "It's your turn! Your hand is:",
+      "rules": "N/A"
+    },
+    {
+      "message": "Take either one point card or up to two vegetable cards.",
+      "rules": {
+        "singleCard": {
+          "description": "A single digit between 0 and 2",
+          "min": 0,
+          "max": 2
+        },
+        "twoCards": {
+          "description": "Two different digits between 0 and market table size",
+          "min": 0,
+          "max": "marketTableSize"
+        }
+      }
+    },
+    {
+      "message": "Would you like to turn a card (Y/N)",
+      "rules": {
+        "yesNo": ["Y", "N"],
+        "cardIndex": {
+          "description": "A valid card index in the player's hand",
+          "min": 0,
+          "max": "handSize"
+        }
+      }
+    }
+  ]
