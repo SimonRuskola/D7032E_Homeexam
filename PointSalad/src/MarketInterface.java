@@ -14,4 +14,5 @@ public interface MarketInterface {
     ArrayList<PileInterface> copyPiles();
     CardInterface getCardFromPile(int index);
     int getTableSize();
+    int getAmountOfPiles();
 }

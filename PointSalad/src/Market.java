@@ -25,6 +25,10 @@ public class Market implements MarketInterface {
         this.piles = this.cardFactory.createPile(playerCount);
     }
 
+    public int getAmountOfPiles() {
+        return piles.size();
+    }
+
     public void setCardsOnTable() {
         for (int i = 0; i < cardsOnTable.size(); i++) {
             if (cardsOnTable.get(i) == null) {

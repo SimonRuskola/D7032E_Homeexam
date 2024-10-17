@@ -10,6 +10,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+
+import PointSalad.src.GameConfig;
 import PointSalad.src.MarketInterface;
 
 
@@ -17,6 +20,7 @@ public class Server {
 
     private ServerSocket aSocket;
     private ArrayList<PlayerInterface> players = new ArrayList<PlayerInterface>();
+    private GameConfig config;
 
     public void sendToAllPlayers(String message) {
 		for(PlayerInterface player : players) {
@@ -32,11 +36,12 @@ public class Server {
         return players;
     }
 
-    public Server(int numberPlayers, int numberOfBots, MarketInterface market) throws Exception {
+    public Server(int numberPlayers, int numberOfBots, MarketInterface market, GameConfig config) throws Exception {
+        this.config = config;
         this.players.add(new Player(0, null, null, null)); //add this instance as a player
         //Open for connections if there are online players
         for(int i=0; i<numberOfBots; i++) {
-            this.players.add(new PlayerBot(i+1,market)); //add a bot    
+            this.players.add(new PlayerBot(i+1,market, config)); //add a bot    
         }
         if(numberPlayers>1)
             aSocket = new ServerSocket(2048);

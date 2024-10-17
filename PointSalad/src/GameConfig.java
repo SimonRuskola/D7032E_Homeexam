@@ -22,4 +22,25 @@ public class GameConfig {
     public JSONObject getAction(int index) {
         return (JSONObject) actions.get(index);
     }
+
+    
+    public JSONArray getActions() {
+        return actions;
+    }
+
+    public int parseMaxValue(Object maxObj, PlayerInterface player, MarketInterface market) {
+        if (maxObj instanceof Long) {
+            return ((Long) maxObj).intValue();
+        } else if (maxObj instanceof String && maxObj.equals("marketTableSize")) {
+            return market.getTableSize()-1;
+        } else if (maxObj instanceof String && maxObj.equals("handSize")) {
+            return player.getHand().size()-1;
+        } else if (maxObj instanceof String && maxObj.equals("getAmountOfPiles")) {
+            return market.getAmountOfPiles()-1;
+        } else {
+            throw new IllegalArgumentException("Invalid max value in rules");
+        }
+    }
+
+    
 }

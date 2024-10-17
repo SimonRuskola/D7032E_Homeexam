@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import org.json.JSONArray;
 
@@ -53,10 +55,6 @@ public class GameService{
 		System.out.println("enter args[1]");
 		args[1] = in.nextLine();
 
-		
-
-		
-
 
 		if(args.length == 0){
 				System.out.println("Please enter the number of players (1-6): ");
@@ -72,7 +70,7 @@ public class GameService{
 			}
 			else {
 				try {
-					Client client = new Client(args[0]);
+					Client client = new Client(args[0], config);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -84,7 +82,7 @@ public class GameService{
         } 
 
 		try {
-			server = new Server(numberPlayers, numberOfBots, market);
+			server = new Server(numberPlayers, numberOfBots, market, config);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -120,12 +118,41 @@ public class GameService{
 	}
 
 	public void endGame() {
-		System.out.println("Game over!");
-		// Calculate scores
-		// Display scores
-		// Display winner
-	}
+    System.out.println("Game over!");
 
+    // Calculate scores for all players
+    List<PlayerInterface> players = server.getPlayers();
+    Map<PlayerInterface, Integer> playerScores = new HashMap<>();
+
+    for (PlayerInterface player : players) {
+        int score = calculateScore(player);
+        playerScores.put(player, score);
+        player.sendMessage("\n\nYour final score is: " + score);
+    }
+
+    // Determine the winner
+    PlayerInterface winner = null;
+    int highestScore = Integer.MIN_VALUE;
+
+    for (Map.Entry<PlayerInterface, Integer> entry : playerScores.entrySet()) {
+        if (entry.getValue() > highestScore) {
+            highestScore = entry.getValue();
+            winner = entry.getKey();
+        }
+    }
+
+    // Display scores and winner
+    for (Map.Entry<PlayerInterface, Integer> entry : playerScores.entrySet()) {
+        System.out.println("Player " + entry.getKey().getPlayerID() + " scored: " + entry.getValue());
+    }
+
+    if (winner != null) {
+        System.out.println("The winner is: " + winner.getPlayerID() + " with a score of " + highestScore);
+        for (PlayerInterface player : players) {
+            player.sendMessage("The winner is: " + winner.getPlayerID() + " with a score of " + highestScore);
+        }
+    }
+}
 	public int countTotalVegetables(ArrayList<CardInterface> hand) {
 		int total = 0;
 		for (CardInterface card : hand) {
@@ -305,22 +332,30 @@ public class GameService{
 	}
 
     public void playTurn(PlayerInterface currentPlayer) {
-			
+        sendInitialMessages(currentPlayer);
 
-	}
+        boolean validInput = false;
+        while (!validInput) {
+            validInput = handleCardSelection(currentPlayer);
+        }
+
+        validInput = false;
+        while (!validInput) {
+            validInput = handleCardTurn(currentPlayer);
+        }
+    }
 
 	private void sendInitialMessages(PlayerInterface currentPlayer) {
-        JSONObject action1 = config.getAction(0);
-        currentPlayer.sendMessage("\n\n****************************************************************\n" + action1.get("message") + "\n");
+        currentPlayer.sendMessage("\n\n****************************************************************\n" + "It's your turn! Your hand is:" + "\n");
         currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
         currentPlayer.sendMessage(market.printMarket());
     }
 
 	private boolean handleCardSelection(PlayerInterface currentPlayer) {
-        JSONObject action2 = config.getAction(1);
-        JSONObject rules = (JSONObject) action2.get("rules");
+        JSONObject cardSelectionAction = config.getAction(0);
+        JSONObject rules = (JSONObject) cardSelectionAction.get("rules");
 
-        currentPlayer.sendMessage("\n\n" + action2.get("message") + "\n");
+        currentPlayer.sendMessage("\n\n" + cardSelectionAction.get("message") + "\n");
         String input = currentPlayer.readMessage();
         if (input.length() == 1) {
             return handleSingleCardSelection(currentPlayer, input, rules);
@@ -331,43 +366,45 @@ public class GameService{
     }
 
 	private boolean handleSingleCardSelection(PlayerInterface currentPlayer, String input, JSONObject rules) {
-        int pileIndex = Integer.parseInt(input);
-        int min = ((Long) ((JSONObject) rules.get("singleCard")).get("min")).intValue();
-        int max = ((Long) ((JSONObject) rules.get("singleCard")).get("max")).intValue();
-        if (pileIndex >= min && pileIndex <= max) {
-            CardInterface card = market.getCardFromPile(pileIndex);
-            if (card != null) {
-                currentPlayer.addCardToHand(card);
-                return true;
-            }
-        }
-        return false;
-    }
+		int pileIndex = Integer.parseInt(input);
+		int min = ((Long) ((JSONObject) rules.get("singleCard")).get("min")).intValue();
+		Object maxObj = ((JSONObject) rules.get("singleCard")).get("max");
+		int max = config.parseMaxValue(maxObj, currentPlayer, market);
+		if (pileIndex >= min && pileIndex <= max) {
+			CardInterface card = market.getCardFromPile(pileIndex);
+			if (card != null) {
+				currentPlayer.addCardToHand(card);
+				return true;
+			}
+		}
+		return false;
+	}
 
 	private boolean handleTwoCardSelection(PlayerInterface currentPlayer, String input, JSONObject rules) {
-        int firstIndex = Character.getNumericValue(input.charAt(0));
-        int secondIndex = Character.getNumericValue(input.charAt(1));
-        int min = ((Long) ((JSONObject) rules.get("twoCards")).get("min")).intValue();
-        int max = market.getTableSize();
-        if (firstIndex >= min && firstIndex < max && secondIndex >= min && secondIndex < max && firstIndex != secondIndex) {
-            CardInterface card1 = market.getCardFromTable(firstIndex);
-            CardInterface card2 = market.getCardFromTable(secondIndex);
-            if (card1 != null && card2 != null) {
-                currentPlayer.addCardToHand(card1);
-                currentPlayer.addCardToHand(card2);
-                market.setCardsOnTable();
-                return true;
-            }
-        }
-        return false;
-    }
+		int firstIndex = Character.getNumericValue(input.charAt(0));
+		int secondIndex = Character.getNumericValue(input.charAt(1));
+		int min = ((Long) ((JSONObject) rules.get("twoCards")).get("min")).intValue();
+		Object maxObj = ((JSONObject) rules.get("twoCards")).get("max");
+		int max = config.parseMaxValue(maxObj, currentPlayer, market);
+		if (firstIndex >= min && firstIndex < max && secondIndex >= min && secondIndex < max && firstIndex != secondIndex) {
+			CardInterface card1 = market.getCardFromTable(firstIndex);
+			CardInterface card2 = market.getCardFromTable(secondIndex);
+			if (card1 != null && card2 != null) {
+				currentPlayer.addCardToHand(card1);
+				currentPlayer.addCardToHand(card2);
+				market.setCardsOnTable();
+				return true;
+			}
+		}
+		return false;
+	}
 
 	private boolean handleCardTurn(PlayerInterface currentPlayer) {
-        JSONObject action3 = config.getAction(2);
-        JSONObject rules = (JSONObject) action3.get("rules");
+        JSONObject cardTurnAction = config.getAction(1);
+        JSONObject rules = (JSONObject) cardTurnAction.get("rules");
 
         currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
-        currentPlayer.sendMessage("\n" + action3.get("message") + "\n");
+        currentPlayer.sendMessage("\n" + cardTurnAction.get("message") + "\n");
         String input = currentPlayer.readMessage();
         if (rules.get("yesNo").toString().contains(input)) {
             if (input.equals("Y")) {
@@ -376,26 +413,27 @@ public class GameService{
                 return true;
             }
         } else {
-            JSONObject action6 = config.getAction(5);
-            currentPlayer.sendMessage("\n" + action6.get("message") + "\n");
+            JSONObject invalidInputAction = config.getAction(4);
+            currentPlayer.sendMessage("\n" + invalidInputAction.get("message") + "\n");
         }
         return false;
     }
 
 	private boolean handleCardFlip(PlayerInterface currentPlayer, JSONObject rules) {
-        JSONObject action4 = config.getAction(3);
-        JSONObject action5 = config.getAction(4);
+        JSONObject cardFlipAction = config.getAction(2);
+        JSONObject invalidFlipAction = config.getAction(3);
 
-        currentPlayer.sendMessage("\n" + action4.get("message") + "\n");
+        currentPlayer.sendMessage("\n" + cardFlipAction.get("message") + "\n");
         currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
         int cardIndex = Integer.parseInt(currentPlayer.readMessage());
         int min = ((Long) ((JSONObject) rules.get("cardIndex")).get("min")).intValue();
-        int max = currentPlayer.getHand().size();
+        Object maxObj = ((JSONObject) rules.get("cardIndex")).get("max");
+		int max = config.parseMaxValue(maxObj, currentPlayer, market);
         if (!currentPlayer.getHand().get(cardIndex).isFlipped() && cardIndex >= min && cardIndex < max) {
             currentPlayer.getHand().get(cardIndex).flipCard();
             return true;
         } else {
-            currentPlayer.sendMessage("\n" + action5.get("message") + "\n");
+            currentPlayer.sendMessage("\n" + invalidFlipAction.get("message") + "\n");
         }
         return false;
     }
@@ -425,6 +463,8 @@ public class GameService{
 		this.isGameOver = true;
 		
 	}
+
+	
        
 }
     
