@@ -337,6 +337,7 @@ public class GameService{
         boolean validInput = false;
         while (!validInput) {
             validInput = handleCardSelection(currentPlayer);
+			sendInitialMessages(currentPlayer);
         }
 
         validInput = false;
@@ -348,7 +349,7 @@ public class GameService{
 	private void sendInitialMessages(PlayerInterface currentPlayer) {
         currentPlayer.sendMessage("\n\n****************************************************************\n" + "It's your turn! Your hand is:" + "\n");
         currentPlayer.sendMessage(displayHand(currentPlayer.getHand()));
-        currentPlayer.sendMessage(market.printMarket());
+        currentPlayer.sendMessage(this.market.printMarket());
     }
 
 	private boolean handleCardSelection(PlayerInterface currentPlayer) {
@@ -366,7 +367,12 @@ public class GameService{
     }
 
 	private boolean handleSingleCardSelection(PlayerInterface currentPlayer, String input, JSONObject rules) {
-		int pileIndex = Integer.parseInt(input);
+		int pileIndex;
+		try {
+			pileIndex = Integer.parseInt(input);
+		} catch (NumberFormatException e) {
+			return false;
+		}
 		int min = ((Long) ((JSONObject) rules.get("singleCard")).get("min")).intValue();
 		Object maxObj = ((JSONObject) rules.get("singleCard")).get("max");
 		int max = config.parseMaxValue(maxObj, currentPlayer, market);
@@ -386,12 +392,16 @@ public class GameService{
 		int min = ((Long) ((JSONObject) rules.get("twoCards")).get("min")).intValue();
 		Object maxObj = ((JSONObject) rules.get("twoCards")).get("max");
 		int max = config.parseMaxValue(maxObj, currentPlayer, market);
-		if (firstIndex >= min && firstIndex < max && secondIndex >= min && secondIndex < max && firstIndex != secondIndex) {
+		if (firstIndex >= min && firstIndex <= max && secondIndex >= min && secondIndex <= max && firstIndex != secondIndex) {
 			CardInterface card1 = market.getCardFromTable(firstIndex);
 			CardInterface card2 = market.getCardFromTable(secondIndex);
-			if (card1 != null && card2 != null) {
-				currentPlayer.addCardToHand(card1);
-				currentPlayer.addCardToHand(card2);
+			if (card1 != null || card2 != null) {
+				if(card1 != null){
+					currentPlayer.addCardToHand(card1);
+				}
+				if(card2 != null){
+					currentPlayer.addCardToHand(card2);
+				}
 				market.setCardsOnTable();
 				return true;
 			}
@@ -429,9 +439,11 @@ public class GameService{
         int min = ((Long) ((JSONObject) rules.get("cardIndex")).get("min")).intValue();
         Object maxObj = ((JSONObject) rules.get("cardIndex")).get("max");
 		int max = config.parseMaxValue(maxObj, currentPlayer, market);
-        if (!currentPlayer.getHand().get(cardIndex).isFlipped() && cardIndex >= min && cardIndex < max) {
-            currentPlayer.getHand().get(cardIndex).flipCard();
-            return true;
+        if (cardIndex >= min && cardIndex <= max) {
+			if(!currentPlayer.getHand().get(cardIndex).isFlipped()){
+				currentPlayer.getHand().get(cardIndex).flipCard();
+				return true;
+			}
         } else {
             currentPlayer.sendMessage("\n" + invalidFlipAction.get("message") + "\n");
         }
