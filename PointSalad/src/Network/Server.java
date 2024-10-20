@@ -2,9 +2,9 @@ package PointSalad.src.Network;
 
 import java.util.ArrayList;
 
-import PointSalad.src.Player;
-import PointSalad.src.PlayerBot;
-import PointSalad.src.PlayerInterface;
+import PointSalad.src.Player.PlayerHuman;
+import PointSalad.src.Player.PlayerBot;
+import PointSalad.src.Player.PlayerInterface;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,7 +13,7 @@ import java.net.Socket;
 
 
 import PointSalad.src.GameConfig;
-import PointSalad.src.MarketInterface;
+import PointSalad.src.Market.MarketInterface;
 
 
 public class Server {
@@ -38,7 +38,7 @@ public class Server {
 
     public Server(int numberPlayers, int numberOfBots, MarketInterface market, GameConfig config) throws Exception {
         this.config = config;
-        this.players.add(new Player(0, null, null, null)); //add this instance as a player
+        this.players.add(new PlayerHuman(0, null, null, null)); //add this instance as a player
         //Open for connections if there are online players
         for(int i=0; i<numberOfBots; i++) {
             this.players.add(new PlayerBot(i+1,market, config)); //add a bot    
@@ -49,7 +49,7 @@ public class Server {
             Socket connectionSocket = aSocket.accept();
             ObjectInputStream inFromClient = new ObjectInputStream(connectionSocket.getInputStream());
             ObjectOutputStream outToClient = new ObjectOutputStream(connectionSocket.getOutputStream());
-            this.players.add(new Player(i, connectionSocket, inFromClient, outToClient)); //add an online client
+            this.players.add(new PlayerHuman(i, connectionSocket, inFromClient, outToClient)); //add an online client
             System.out.println("Connected to player " + i);
             outToClient.writeObject("You connected to the server as player " + i + "\n");
         }    

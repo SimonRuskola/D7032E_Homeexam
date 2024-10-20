@@ -1,4 +1,4 @@
-package PointSalad.src;
+package PointSalad.src.Player;
 import java.util.ArrayList;
 
 import PointSalad.src.Cards.CardInterface;

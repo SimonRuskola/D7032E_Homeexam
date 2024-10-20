@@ -1,5 +1,5 @@
+package PointSalad.src.Player;
 
-package PointSalad.src;
 import java.util.ArrayList;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -7,10 +7,10 @@ import java.net.Socket;
 import java.util.Scanner;
 
 import PointSalad.src.Cards.CardInterface;
+import PointSalad.src.Player.communication.IPlayerCommunication;
 
-
-public class Player implements PlayerInterface {
-
+public abstract class Player implements PlayerInterface{
+    
     private int playerID;
     private ArrayList<CardInterface> hand;
 	private Socket connection;
@@ -19,23 +19,15 @@ public class Player implements PlayerInterface {
 	private boolean online;
 	private Scanner in = new Scanner(System.in);
 
-    public Player(int playerID, Socket connection, ObjectInputStream inFromClient, ObjectOutputStream outToClient) {
+    public Player(int playerID) {
+
         this.playerID = playerID;
-		this.connection = connection; 
-		this.inFromClient = inFromClient; 
-		this.outToClient = outToClient;
         this.hand = new ArrayList<CardInterface>();
 		if(connection == null)
 				this.online = false;
 			else
 				this.online = true;
     }
-
-	public Player(int playerID, boolean isBot){
-		this.playerID = playerID;
-		this.hand = new ArrayList<CardInterface>();
-		this.online = false;
-	}
 
 
 	@Override
@@ -78,5 +70,4 @@ public class Player implements PlayerInterface {
 	public boolean isBot() {
 		return false;
 	}
-
 }

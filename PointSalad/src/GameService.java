@@ -13,9 +13,10 @@ import org.json.JSONArray;
 import PointSalad.src.Cards.Card;
 import PointSalad.src.Cards.CardInterface;
 import PointSalad.src.Cards.CardType;
-
+import PointSalad.src.Market.MarketInterface;
 import PointSalad.src.Network.Client;
 import PointSalad.src.Network.Server;
+import PointSalad.src.Player.PlayerInterface;
 
 //import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -464,7 +465,7 @@ public class GameService{
 		return handString;
 	}
 
-	public void isGameOver() {
+	private void isGameOver() {
 
 		for (int i = 0; i < market.getTableSize(); i++) {
 			if (market.copyCardFromTable(i) != null) {

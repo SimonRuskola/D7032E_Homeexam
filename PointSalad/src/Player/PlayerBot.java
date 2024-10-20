@@ -1,4 +1,4 @@
-package PointSalad.src;
+package PointSalad.src.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,41 +6,25 @@ import java.util.Comparator;
 import java.util.Random;
 
 import PointSalad.src.Cards.CardInterface;
-import PointSalad.src.MarketInterface;
+import PointSalad.src.Market.MarketInterface;
+import PointSalad.src.GameConfig;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
-public class PlayerBot implements PlayerInterface{
+public class PlayerBot extends Player{
     private int playerID;
     private ArrayList<CardInterface> hand;
     private MarketInterface market;
-    private String nextChoise = null;
     private String message;
-    GameConfig config;
+    private GameConfig config;
 
     public PlayerBot(int playerID, MarketInterface market, GameConfig config){
-        this.playerID = playerID;
+        super(playerID);
         this.market = market;
         this.config = config;
-        this.hand = new ArrayList<CardInterface>();
     }
 
-    @Override
-    public int getPlayerID() {
-        return this.playerID;
-    }
-
-    @Override
-    public void addCardToHand(CardInterface card) {
-        hand.add(card);
-    }
-
-    @Override
-    public ArrayList<CardInterface> getHand() {
-        return this.hand;
-    }
 
     @Override
     public boolean isBot() {
