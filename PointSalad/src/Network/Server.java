@@ -44,7 +44,7 @@ public class Server {
         //Open for connections if there are online players
 
         for(int i=0; i<numberOfBots; i++) {
-            this.players.add(new PlayerBot(i+1, new playerBotActions() ,market)); //add a bot    
+            this.players.add(new PlayerBot(i+1, new playerBotActions() ,market, new BotPlayerCommunication())); //add a bot    
         }
         if(numberPlayers>1)
             aSocket = new ServerSocket(2048);

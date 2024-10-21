@@ -49,6 +49,11 @@ public class playerHumanActions implements IPlayerActions {
             
         player.getPlayerCommunication().sendMessage("Please enter the index of the two cards you would like to take");
         String input = player.getPlayerCommunication().readMessage();
+
+        if(input.length() != 2){
+            player.getPlayerCommunication().sendMessage("Invalid input, please enter two indexes");
+            continue;
+        }
         
 
         max = market.getTableSize();

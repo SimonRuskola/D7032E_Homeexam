@@ -82,12 +82,12 @@ public class Market implements MarketInterface {
         CardInterface card1 = cardsOnTable.get(index1);
         CardInterface card2 = cardsOnTable.get(index2);
         if (card1 != null) {
-            cardsOnTable.set(index1, null);
             cards.add(card1);
+            cardsOnTable.set(index1, null);
         }
         if (card2 != null) {
-            cardsOnTable.set(index2, null);
             cards.add(card2);
+            cardsOnTable.set(index2, null);
         }
         return cards;
     }

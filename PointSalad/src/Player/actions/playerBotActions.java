@@ -44,10 +44,10 @@ public class playerBotActions implements IPlayerActions {
         
 
         boolean firstCardFound = false;
-        for (int i = min; i <= max; i++) {
+        for (int i = min; i < max; i++) {
             CardInterface card = market.getCardFromTable(i);
             if (card != null && !firstCardFound) {              // will take the first available card
-                    firstIndex = i;
+                firstIndex = i;
             }
             if (card != null && firstCardFound || i == max) {   // if nothing is found, the last index will be picked
                 secondIndex = i;
@@ -55,8 +55,11 @@ public class playerBotActions implements IPlayerActions {
             }
         }
 
+        
+
         ArrayList<CardInterface> cards = market.takeTwoCardsFromTable(firstIndex, secondIndex);
 
+        market.setCardsOnTable();
         player.addCardToHand(cards.get(0));
         player.addCardToHand(cards.get(1));
      

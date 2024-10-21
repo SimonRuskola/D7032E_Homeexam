@@ -42,17 +42,13 @@ public class GameService{
 
 	}
 
-	public void startGame(String[] args2) {
+	public void startGame(String[] args) {
 
 		Scanner in = new Scanner(System.in);
-		String[] args = new String[2];
-
-		System.out.println(args.length);
-
-		System.out.println("enter args[0]");
-		args[0] = in.nextLine();
-		System.out.println("enter args[1]");
-		args[1] = in.nextLine();
+		//System.out.println("enter args[0]");
+		//args[0] = in.nextLine();
+		//System.out.println("enter args[1]");
+		//args[1] = in.nextLine();
 
 
 		if(args.length == 0){
@@ -77,7 +73,7 @@ public class GameService{
 			}
 		}
 
-		if ((numberPlayers+numberOfBots) < 1 || (numberPlayers+numberOfBots) > 6) {
+		if (checkNumberOfPlayers(numberPlayers, numberOfBots)) {
             throw new IllegalArgumentException("Invalid number of players");
         } 
 
@@ -115,6 +111,13 @@ public class GameService{
 
 		endGame();
 
+	}
+
+	public boolean checkNumberOfPlayers(int numberPlayers, int numberOfBots) {
+		if ((numberPlayers+numberOfBots) < 1 || (numberPlayers+numberOfBots) > 6) {
+			return false;
+		}
+		return true;
 	}
 
 	public void endGame() {
@@ -340,7 +343,7 @@ public class GameService{
     public void playTurn(PlayerInterface currentPlayer) {
         sendInitialMessages(currentPlayer);
 
-        currentPlayer.getActions().cardChoise(currentPlayer, market);
+        currentPlayer.getActions().cardChoise(currentPlayer, this.market);
 
         currentPlayer.getActions().flipCardConformation(currentPlayer);
     }
