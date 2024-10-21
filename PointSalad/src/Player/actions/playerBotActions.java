@@ -1,5 +1,6 @@
 package PointSalad.src.Player.actions;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import org.json.simple.JSONObject;
@@ -38,42 +39,53 @@ public class playerBotActions implements IPlayerActions {
         int min = 0;
         int max = market.getTableSize();
         
-        int firstIndex = random.nextInt(max - min) + min;
-        int secondIndex;
-        secondIndex = random.nextInt(max - min) + min;
-        while (secondIndex == firstIndex);
-    
-        choice = String.valueOf(firstIndex) + String.valueOf(secondIndex);
-
-
-     
-
-
+        int firstIndex = 0;
+        int secondIndex = 0;
         
 
-        if (card1 != null || card2 != null) {
-            if(card1 != null){
-                player.addCardToHand(card1);
+        boolean firstCardFound = false;
+        for (int i = min; i <= max; i++) {
+            CardInterface card = market.getCardFromTable(i);
+            if (card != null && !firstCardFound) {              // will take the first available card
+                    firstIndex = i;
             }
-            if(card2 != null){
-                player.addCardToHand(card2);
+            if (card != null && firstCardFound || i == max) {   // if nothing is found, the last index will be picked
+                secondIndex = i;
+                break;
             }
-            market.setCardsOnTable();
-            
         }
+
+        ArrayList<CardInterface> cards = market.takeTwoCardsFromTable(firstIndex, secondIndex);
+
+        player.addCardToHand(cards.get(0));
+        player.addCardToHand(cards.get(1));
+     
+
+        
 
     }
 
     @Override
     public void takeOneCard(PlayerInterface player, MarketInterface market) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'takeOneCards'");
+        // will take a random card from top of any of the piles if available
+        int min = 0;
+        int max = market.getAmountOfPiles();
+        ArrayList<Integer> availablePiles = new ArrayList<Integer>();
+        for (int i = min; i < max; i++) {
+            if(market.getCardFromPile(i) != null){
+                availablePiles.add(i);
+            }
+        }
+
+        int pileIndex = availablePiles.get(random.nextInt(availablePiles.size()));
+
+        player.addCardToHand(market.getCardFromPile(pileIndex));
+
     }
 
     @Override
     public void flipCardConformation(PlayerInterface player) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'flipCardConformation'");
+        // bots dont need to flip cards
     }
 
     @Override

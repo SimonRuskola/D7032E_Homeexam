@@ -77,6 +77,21 @@ public class Market implements MarketInterface {
         return cardsOnTable;  
     }
 
+    public ArrayList<CardInterface> takeTwoCardsFromTable(int index1, int index2) {
+        ArrayList<CardInterface> cards = new ArrayList<CardInterface>();
+        CardInterface card1 = cardsOnTable.get(index1);
+        CardInterface card2 = cardsOnTable.get(index2);
+        if (card1 != null) {
+            cardsOnTable.set(index1, null);
+            cards.add(card1);
+        }
+        if (card2 != null) {
+            cardsOnTable.set(index2, null);
+            cards.add(card2);
+        }
+        return cards;
+    }
+
     public CardInterface getCardFromPile(int index) {
         PileInterface pile = piles.get(index);
         CardInterface card = pile.drawTopCard();

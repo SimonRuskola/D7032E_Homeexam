@@ -7,6 +7,8 @@ import java.net.Socket;
 import java.util.Scanner;
 
 import PointSalad.src.Cards.CardInterface;
+import PointSalad.src.Player.actions.IPlayerActions;
+import PointSalad.src.Player.communication.IPlayerCommunication;
 
 
 public class PlayerHuman extends Player{
@@ -19,40 +21,10 @@ public class PlayerHuman extends Player{
 	private boolean online;
 	private Scanner in = new Scanner(System.in);
 
-    public PlayerHuman(int playerID, Socket connection, ObjectInputStream inFromClient, ObjectOutputStream outToClient) {
-        super(playerID);
-		this.connection = connection; 
-		this.inFromClient = inFromClient; 
-		this.outToClient = outToClient;
-        this.hand = new ArrayList<CardInterface>();
-		if(connection == null)
-				this.online = false;
-			else
-				this.online = true;
+    public PlayerHuman(int playerID, IPlayerActions actions, IPlayerCommunication playerCommunication) {
+        super(playerID, actions);
+		setPlayerCommunication(playerCommunication);
+		
     }
-
-
-
-	@Override
-	public void addCardToHand(CardInterface card) {
-		hand.add(card);
-	}
-
-	@Override
-	public int getPlayerID() {
-		return this.playerID;
-	}
-
-	@Override
-	public ArrayList<CardInterface> getHand() {
-		return this.hand;
-	}
-
-	
-
-	@Override
-	public boolean isBot() {
-		return false;
-	}
 
 }

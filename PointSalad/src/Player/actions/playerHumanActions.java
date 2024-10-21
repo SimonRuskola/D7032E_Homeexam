@@ -24,8 +24,9 @@ public class playerHumanActions implements IPlayerActions {
         boolean validInput = false;
 
         while (!validInput) {
-            player.sendMessage("do you want to either take two vegetables or one point card? (V/P)");
-            String input = player.readMessage();
+            player.getPlayerCommunication().sendMessage("do you want to either take two vegetables or one point card? (V/P)");
+
+            String input = player.getPlayerCommunication().readMessage();
 
             if (input.equals("V")) {
                 validInput = true;
@@ -35,7 +36,7 @@ public class playerHumanActions implements IPlayerActions {
                 validInput = true;
                 takeOneCard(player, market);
             } else {
-                player.sendMessage("Invalid input, please enter 'V' or 'P'");
+                player.getPlayerCommunication().sendMessage("Invalid input, please enter 'V' or 'P'");
             }
         }
     }
@@ -46,9 +47,9 @@ public class playerHumanActions implements IPlayerActions {
 
         while (!validInput) {
             
+        player.getPlayerCommunication().sendMessage("Please enter the index of the two cards you would like to take");
+        String input = player.getPlayerCommunication().readMessage();
         
-        player.sendMessage("Please enter the index of the two cards you would like to take");
-        String input = player.readMessage();
 
         max = market.getTableSize();
         min = 0;
@@ -58,7 +59,7 @@ public class playerHumanActions implements IPlayerActions {
 		int secondIndex = Character.getNumericValue(input.charAt(1));
 
         
-		if (firstIndex >= min && firstIndex <= max && secondIndex >= min && secondIndex <= max && firstIndex != secondIndex) {
+		if (firstIndex >= min && firstIndex < max && secondIndex >= min && secondIndex < max && firstIndex != secondIndex) {
 			CardInterface card1 = market.getCardFromTable(firstIndex);
 			CardInterface card2 = market.getCardFromTable(secondIndex);
 			if (card1 != null || card2 != null) {
@@ -69,10 +70,11 @@ public class playerHumanActions implements IPlayerActions {
 					player.addCardToHand(card2);
 				}
 				market.setCardsOnTable();
+                validInput = true;
 				
 			}
 		}
-        validInput = true;
+        
     
         }
 		
@@ -83,22 +85,23 @@ public class playerHumanActions implements IPlayerActions {
         boolean validInput = false;
 
         while (!validInput) {
-        player.sendMessage("Please enter the index of the card you would like to take");
-        String input = player.readMessage();
-        int pileIndex = Integer.parseInt(input);
+            player.getPlayerCommunication().sendMessage("Please enter the index of the card you would like to take");
+            String input = player.getPlayerCommunication().readMessage();
+     
+            int pileIndex = Integer.parseInt(input);
 
-        max = market.getAmountOfPiles();
-        min = 0;
+            max = market.getAmountOfPiles();
+            min = 0;
 
-        if (pileIndex >= min && pileIndex <= max) {
-			CardInterface card = market.getCardFromPile(pileIndex);
-			if (card != null) {
-				player.addCardToHand(card);
-	
-			}
-		}
+            if (pileIndex >= min && pileIndex < max) {
+			    CardInterface card = market.getCardFromPile(pileIndex);
+			    if (card != null) {
+			    	player.addCardToHand(card);
+                    validInput = true;
+			    }
+	    	}
 
-        validInput = true;
+            
         }
 
         
@@ -109,18 +112,18 @@ public class playerHumanActions implements IPlayerActions {
         boolean validInput = false;
 
         while (!validInput) {
-        player.sendMessage("Would you like to flip a card? (Y/N)");
-        String input = player.readMessage();
+            player.getPlayerCommunication().sendMessage("Would you like to flip a card? (Y/N)");
+            String input = player.getPlayerCommunication().readMessage();
 
-        if (input.equals("Y")) {
-            validInput = true;
-            flipCard(player);
-        } else if (input.equals("N")) {
-            player.sendMessage("You have chosen not to flip a card");
-            validInput = true;
-        } else {
-            player.sendMessage("Invalid input, please enter 'Y' or 'N'");
-        }
+            if (input.equals("Y")) {
+                validInput = true;
+                flipCard(player);
+            } else if (input.equals("N")) {
+                player.getPlayerCommunication().sendMessage("You have chosen not to flip a card");
+                validInput = true;
+            } else {
+                player.getPlayerCommunication().sendMessage("Invalid input, please enter 'Y' or 'N'");
+            }
 
        
         }
@@ -132,20 +135,22 @@ public class playerHumanActions implements IPlayerActions {
         boolean validInput = false;
 
         while (!validInput) {
-        player.sendMessage("Please enter the index of the card you would like to flip");
-        String input = player.readMessage();
-        int cardIndex = Integer.parseInt(input);
+            player.getPlayerCommunication().sendMessage("Please enter the index of the card you would like to flip \n");
+            player.getPlayerCommunication().sendMessage("Your hand: \n");
+            player.getPlayerCommunication().sendMessage(player.getHand().toString());
+            String input = player.getPlayerCommunication().readMessage();
+            int cardIndex = Integer.parseInt(input);
 
-        max = player.getHand().size();
-        min = 0;
+            max = player.getHand().size();
+            min = 0;
 
-        if (cardIndex >= min && cardIndex <= max) {
-            CardInterface card = player.getHand().get(cardIndex);
-            if (card != null) {
-                card.flipCard();
-                validInput = true;
+            if (cardIndex >= min && cardIndex <= max) {
+                CardInterface card = player.getHand().get(cardIndex);
+                if (card != null) {
+                    card.flipCard();
+                    validInput = true;
+                }
             }
-        }
         }
 
 

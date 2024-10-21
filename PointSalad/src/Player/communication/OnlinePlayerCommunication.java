@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
+import java.io.IOException;
 /**
  * This class represents how a local player can communicate with the game.
  * Implements the IPlayerCommunication interface
@@ -14,12 +14,19 @@ public class OnlinePlayerCommunication implements IPlayerCommunication {
 
 	private ObjectInputStream inFromClient;
 	private ObjectOutputStream outToClient;
+  private Socket socket;
 	
 
-    public OnlinePlayerCommunication(ObjectInputStream inFromClient, ObjectOutputStream outToClient) {
-        this.inFromClient = inFromClient;
-        this.outToClient = outToClient;
-        
+    public OnlinePlayerCommunication(Socket socket) {
+
+      this.socket = socket;
+      try {
+        this.inFromClient = new ObjectInputStream(socket.getInputStream());
+        this.outToClient = new ObjectOutputStream(socket.getOutputStream());
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+     
     }
 
     /**

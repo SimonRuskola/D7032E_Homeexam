@@ -8,26 +8,33 @@ import java.util.Scanner;
 
 import PointSalad.src.Cards.CardInterface;
 import PointSalad.src.Player.communication.IPlayerCommunication;
+import PointSalad.src.Player.actions.IPlayerActions;
 
 public abstract class Player implements PlayerInterface{
     
     private int playerID;
     private ArrayList<CardInterface> hand;
-	private Socket connection;
-	private ObjectInputStream inFromClient;
-	private ObjectOutputStream outToClient;
 	private boolean online;
-	private Scanner in = new Scanner(System.in);
+	private IPlayerActions actions;
+	private IPlayerCommunication playerCommunication;
 
-    public Player(int playerID) {
-
+    public Player(int playerID, IPlayerActions actions) {
+		this.actions = actions;
         this.playerID = playerID;
         this.hand = new ArrayList<CardInterface>();
-		if(connection == null)
-				this.online = false;
-			else
-				this.online = true;
     }
+
+	public IPlayerActions getActions() {
+		return this.actions;
+	}
+
+	public void setPlayerCommunication(IPlayerCommunication playerCommunication) {
+		this.playerCommunication = playerCommunication;
+	}
+
+	public IPlayerCommunication getPlayerCommunication() {
+		return this.playerCommunication;
+	}
 
 
 	@Override
@@ -45,29 +52,5 @@ public abstract class Player implements PlayerInterface{
 		return this.hand;
 	}
 
-	public void sendMessage(Object message) {
-		if (!online) {
-			System.out.println(message);
-		}
-		else {
-			try {
-				outToClient.writeObject(message);
-			} catch (Exception e) {}
-		}            
-		return;
-	}
 
-	public String readMessage() {
-		String word = ""; 
-		if(online)
-			try{word = (String) inFromClient.readObject();} catch (Exception e){}
-		else
-			try {word=in.nextLine();} catch(Exception e){}
-		return word;
-	}
-
-	@Override
-	public boolean isBot() {
-		return false;
-	}
 }

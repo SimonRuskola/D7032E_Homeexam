@@ -9,8 +9,7 @@ public class PointSalad {
 
         CardFactory cardFactory = new CardFactory();
         Market market = new Market(cardFactory);
-        GameConfig config = new GameConfig("PointSalad\\actions.json");
-        GameService gameService = new GameService(market, config);
+        GameService gameService = new GameService(market);
         gameService.startGame(args);
 
     

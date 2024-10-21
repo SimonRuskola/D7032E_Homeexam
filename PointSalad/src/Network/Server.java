@@ -6,25 +6,27 @@ import PointSalad.src.Player.PlayerHuman;
 import PointSalad.src.Player.PlayerBot;
 import PointSalad.src.Player.PlayerInterface;
 
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 
-import PointSalad.src.GameConfig;
-import PointSalad.src.Market.MarketInterface;
 
+import PointSalad.src.Market.MarketInterface;
+import PointSalad.src.Player.communication.*;
+import PointSalad.src.Player.actions.*;
 
 public class Server {
 
     private ServerSocket aSocket;
     private ArrayList<PlayerInterface> players = new ArrayList<PlayerInterface>();
-    private GameConfig config;
+    
 
     public void sendToAllPlayers(String message) {
 		for(PlayerInterface player : players) {
-			player.sendMessage(message);
+			player.getPlayerCommunication().sendMessage(message);
 		}
 	}
 
@@ -36,22 +38,21 @@ public class Server {
         return players;
     }
 
-    public Server(int numberPlayers, int numberOfBots, MarketInterface market, GameConfig config) throws Exception {
-        this.config = config;
-        this.players.add(new PlayerHuman(0, null, null, null)); //add this instance as a player
+    public Server(int numberPlayers, int numberOfBots, MarketInterface market) throws Exception {
+    
+        this.players.add(new PlayerHuman(0, new playerHumanActions(), new LocalPlayerCommunication())); //add this instance as a player
         //Open for connections if there are online players
+
         for(int i=0; i<numberOfBots; i++) {
-            this.players.add(new PlayerBot(i+1,market, config)); //add a bot    
+            this.players.add(new PlayerBot(i+1, new playerBotActions() ,market)); //add a bot    
         }
         if(numberPlayers>1)
             aSocket = new ServerSocket(2048);
         for(int i=numberOfBots+1; i<numberPlayers+numberOfBots; i++) {
             Socket connectionSocket = aSocket.accept();
-            ObjectInputStream inFromClient = new ObjectInputStream(connectionSocket.getInputStream());
-            ObjectOutputStream outToClient = new ObjectOutputStream(connectionSocket.getOutputStream());
-            this.players.add(new PlayerHuman(i, connectionSocket, inFromClient, outToClient)); //add an online client
+            this.players.add(new PlayerHuman(i, new playerHumanActions(), new OnlinePlayerCommunication(connectionSocket))); //add an online client
             System.out.println("Connected to player " + i);
-            outToClient.writeObject("You connected to the server as player " + i + "\n");
+            //outToClient.writeObject("You connected to the server as player " + i + "\n");
         }    
     }
     
