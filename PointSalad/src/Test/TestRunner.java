@@ -7,7 +7,7 @@ import org.junit.runner.notification.Failure;
 public class TestRunner {
 
     public static void main(String[] args) {
-      Result result = JUnitCore.runClasses(test.class);
+      Result result = JUnitCore.runClasses(pointSalladTests.class);
 		
       for (Failure failure : result.getFailures()) {
          System.out.println(failure.toString());

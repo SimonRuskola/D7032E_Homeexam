@@ -15,7 +15,7 @@ import PointSalad.src.Player.communication.CommunicationForTesting;
 import PointSalad.src.Network.*;
 import PointSalad.src.Cards.*;
 
-public class test {
+public class pointSalladTests {
 
     private GameService gameService;
     private Market market;
