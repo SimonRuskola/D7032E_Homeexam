@@ -42,7 +42,7 @@ public class playerHumanActions implements IPlayerActions {
 
         while (!validInput) {
             
-        player.getPlayerCommunication().sendMessage("Please enter the index of the two cards you would like to take");
+        player.getPlayerCommunication().sendMessage("Please enter the index of the two cards you would like to take (example \"01\") \n");
         String input = player.getPlayerCommunication().readMessage();
 
         if(input.length() != 2){
@@ -85,7 +85,7 @@ public class playerHumanActions implements IPlayerActions {
         boolean validInput = false;
 
         while (!validInput) {
-            player.getPlayerCommunication().sendMessage("Please enter the index of the card you would like to take");
+            player.getPlayerCommunication().sendMessage("Please enter the index of the card you would like to take (example \\\"0\\\")");
             String input = player.getPlayerCommunication().readMessage();
      
             int pileIndex = Integer.parseInt(input);
