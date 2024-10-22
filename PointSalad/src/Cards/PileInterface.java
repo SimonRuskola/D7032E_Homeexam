@@ -9,5 +9,6 @@ public interface PileInterface {
     public ArrayList<CardInterface> getCards();
     public CardInterface getBottomCard();
     public CardInterface getTopCard();
+    public CardInterface getCard(int index);
 
 }

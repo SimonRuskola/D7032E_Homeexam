@@ -3,7 +3,6 @@ import java.util.ArrayList;
 
 import PointSalad.src.Cards.CardFactoryInterface;
 import PointSalad.src.Cards.CardInterface;
-import PointSalad.src.Cards.Pile;
 import PointSalad.src.Cards.PileInterface;
 
 public class Market implements MarketInterface {
@@ -77,20 +76,7 @@ public class Market implements MarketInterface {
         return cardsOnTable;  
     }
 
-    public ArrayList<CardInterface> takeTwoCardsFromTable(int index1, int index2) {
-        ArrayList<CardInterface> cards = new ArrayList<CardInterface>();
-        CardInterface card1 = cardsOnTable.get(index1);
-        CardInterface card2 = cardsOnTable.get(index2);
-        if (card1 != null) {
-            cards.add(card1);
-            cardsOnTable.set(index1, null);
-        }
-        if (card2 != null) {
-            cards.add(card2);
-            cardsOnTable.set(index2, null);
-        }
-        return cards;
-    }
+   
 
     public CardInterface getCardFromPile(int index) {
         PileInterface pile = piles.get(index);

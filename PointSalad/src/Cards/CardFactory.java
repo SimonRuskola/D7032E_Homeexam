@@ -20,6 +20,7 @@ public class CardFactory implements CardFactoryInterface {
     @Override
     public ArrayList<PileInterface> createPile(int numberPlayers) {
 
+        //System.out.println("numberPlayers: " + numberPlayers);
         ArrayList<PileInterface> piles = new ArrayList<>();
 
         ArrayList<CardInterface> deckPepper = new ArrayList<>();
@@ -72,8 +73,8 @@ public class CardFactory implements CardFactoryInterface {
 
 		    
 
-		    int cardsPerVeggie = numberPlayers/2 * 6;
-            //int cardsPerVeggie = 3;
+		    int cardsPerVeggie = numberPlayers*3;
+    
 
             //System.out.println("cardsPerVeggie: " + cardsPerVeggie);
         
@@ -87,6 +88,8 @@ public class CardFactory implements CardFactoryInterface {
 		    	deck.add(deckTomato.remove(0));
 		    }
 		    Collections.shuffle(deck);
+
+            //System.out.println("deck size: " + deck.size());
 
             Pile pile1 = new Pile(new ArrayList<CardInterface>());
             Pile pile2 = new Pile(new ArrayList<CardInterface>());

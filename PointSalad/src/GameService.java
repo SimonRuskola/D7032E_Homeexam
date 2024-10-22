@@ -1,16 +1,10 @@
 package PointSalad.src;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import org.json.JSONArray;
 
-import PointSalad.src.Cards.Card;
 import PointSalad.src.Cards.CardInterface;
 import PointSalad.src.Cards.CardType;
 import PointSalad.src.Market.MarketInterface;
@@ -18,16 +12,12 @@ import PointSalad.src.Network.Client;
 import PointSalad.src.Network.Server;
 import PointSalad.src.Player.PlayerInterface;
 
-//import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+
 
 
 public class GameService{
     
     private MarketInterface market;
-	private boolean isGameOver = false;
 	//private ArrayList<Player> players = new ArrayList<Player>();
 	private int numberPlayers = 0;
 	private int numberOfBots = 0;
@@ -70,10 +60,11 @@ public class GameService{
 					e.printStackTrace();
 				}
 				endGame();
+				return;
 			}
 		}
 
-		if (checkNumberOfPlayers(numberPlayers, numberOfBots)) {
+		if (checkIfWrongAmountOfPlayers(numberPlayers, numberOfBots)) {
             throw new IllegalArgumentException("Invalid number of players");
         } 
 
@@ -90,22 +81,22 @@ public class GameService{
 		//}
 
 		// Set random starting player
-		this.currentPlayerIndex = (int) (Math.random() * (numberPlayers+numberOfBots));
-		this.currentPlayer = server.getPlayer(currentPlayerIndex);
+		this.currentPlayer = setRandomStartingPlayer(numberPlayers, numberOfBots);
+		this.currentPlayerIndex = currentPlayer.getPlayerID();
 
-		while (!isGameOver) {
+		while (!isGameOver(this.market)) { // Check if the game is over if all cards on table are null
 			playTurn(currentPlayer);
 
 			int score = calculateScore(currentPlayer);
 
+			sendAllPlayersMessage("Player:"+currentPlayer.getPlayerID()+" hand: \n"+displayHand(currentPlayer.getHand()), this.server);
+
 			currentPlayer.getPlayerCommunication().sendMessage("\n\nYour score is: " + score);
 			
 			currentPlayerIndex++;
-			currentPlayer = server.getPlayers().get(currentPlayerIndex % server.getPlayers().size());
+			currentPlayerIndex = currentPlayerIndex % server.getPlayers().size();
+			currentPlayer = server.getPlayers().get(currentPlayerIndex);
 
-			// Check if the game is over if all cards on table are null
-			isGameOver();
-		
 
 		}
 
@@ -113,11 +104,17 @@ public class GameService{
 
 	}
 
-	public boolean checkNumberOfPlayers(int numberPlayers, int numberOfBots) {
+	public PlayerInterface setRandomStartingPlayer(int numberPlayers, int numberOfBots) {
+		int startingPlayerIndex = (int) (Math.random() * (numberPlayers+numberOfBots));
+		PlayerInterface startingPlayer = server.getPlayer(startingPlayerIndex);
+		return startingPlayer;
+	}
+
+	public boolean checkIfWrongAmountOfPlayers(int numberPlayers, int numberOfBots) {
 		if ((numberPlayers+numberOfBots) < 1 || (numberPlayers+numberOfBots) > 6) {
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 
 	public void endGame() {
@@ -156,9 +153,11 @@ public class GameService{
         }
     }
 
-	System.exit(0);
+	//System.exit(0);
 
 }
+
+	
 
 	public int countTotalVegetables(ArrayList<CardInterface> hand) {
 		int total = 0;
@@ -218,14 +217,15 @@ public class GameService{
 							}
 						}
 						if(countVeg == thisHandCount) {
-							//int aScore = Integer.parseInt(criteria.substring(criteria.indexOf("=")+1).trim());
-							//System.out.print("ID18 MOST/FEWEST: "+aScore + " " );
-							totalScore += Integer.parseInt(criteria.substring(criteria.indexOf("=")+1).trim());
+						
+							int aScore = Integer.parseInt(criteria.substring(criteria.indexOf("=")+1).trim());
+							System.out.println("ID18 MOST/FEWEST: "+aScore + " " );
+							totalScore += aScore;
 						}
 					}
 					if(criteria.indexOf("TYPE")>=0) {
 						String[] expr = criteria.split("/");
-						int addScore = Integer.parseInt(expr[1].trim());
+						int addScore = Integer.parseInt(expr[0].trim());
 						if(expr[1].indexOf("MISSING")>=0) {
 							int missing = 0;
 							for (CardType vegetable : CardType.values()) {
@@ -233,9 +233,9 @@ public class GameService{
 									missing++;
 								}
 							}
-							//int aScore = missing * addScore;
-							//System.out.print("ID18 TYPE MISSING: "+aScore + " ");
-							totalScore += missing * addScore;
+							int aScore = missing * addScore;
+							System.out.println("ID18 TYPE MISSING: "+aScore + " ");
+							totalScore += aScore;
 						}
 						else {
 							int atLeastPerVegType = Integer.parseInt(expr[1].substring(expr[1].indexOf(">=")+2).trim());
@@ -246,15 +246,15 @@ public class GameService{
 									totalType++;
 								}
 							}
-							//int aScore = totalType * addScore;
-							//System.out.print("ID18 TYPE >=: "+aScore + " ");
-							totalScore += totalType * addScore;
+							int aScore = totalType * addScore;
+							System.out.println("ID18 TYPE >=: "+aScore + " ");
+							totalScore += aScore;
 						}
 					}
 					if(criteria.indexOf("SET")>=0) {
 						//int addScore = 12;
 						String[] expr = criteria.split("=");
-						int addScore = Integer.parseInt(expr[0].trim());
+						int addScore = Integer.parseInt(expr[1].trim());
 						for (CardType vegetable : CardType.values()) {
 							int countVeg = countVegetables(hand, vegetable);
 							if(countVeg == 0) {
@@ -262,7 +262,7 @@ public class GameService{
 								break;
 							}
 						}
-						//System.out.print("ID18 SET: "+addScore + " ");
+						System.out.println("ID18 SET: "+addScore + " ");
 						totalScore += addScore;
 					}
 				}
@@ -284,8 +284,10 @@ public class GameService{
 						}
 					}
 					if(nrVeg == countVeg) {
-						//System.out.print("ID1/ID2: "+Integer.parseInt(criteria.substring(criteria.indexOf("=")+1).trim()) + " ");
-						totalScore += Integer.parseInt(criteria.substring(criteria.indexOf("=")+1).trim());
+						//System.out.println("ID1/ID2: "+Integer.parseInt(criteria.substring(criteria.indexOf("=")+1).trim()) + " ");
+						int aScore = Integer.parseInt(criteria.substring(criteria.indexOf("=")+1).trim());
+						System.err.println("ID1/ID2: "+aScore + " ");
+						totalScore += aScore;
 					}
 				}
 			
@@ -302,7 +304,7 @@ public class GameService{
 							}
 						}
 						if(countSameKind > 1) {
-							//System.out.print("ID5/ID11: "+ ((int)countVegetables(hand, CardType.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
+							System.out.println("ID5/ID11: "+ ((int)countVegetables(hand, CardType.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
 							totalScore +=  ((int)countVegetables(hand, CardType.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim());
 						} else {
 							for(int i = 0; i < vegs.length; i++) {
@@ -315,20 +317,20 @@ public class GameService{
 									min = nrVeg[x];
 								}
 							}
-							//System.out.print("ID6/ID7/ID12/ID13: "+min * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
+							System.out.println("ID6/ID7/ID12/ID13: "+min * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
 							totalScore += min * Integer.parseInt(criteria.split("=")[1].trim());
 						}
 					}
 					else if(parts[0].indexOf("=")>=0) { //ID3
 						String veg = parts[0].substring(0, parts[0].indexOf(":"));
 						int countVeg = countVegetables(hand, CardType.valueOf(veg));
-						//System.out.print("ID3: "+((countVeg%2==0)?7:3) + " ");
+						System.out.println("ID3: "+((countVeg%2==0)?7:3) + " ");
 						totalScore += (countVeg%2==0)?7:3;
 					}
 					else { //ID4, ID8, ID9, ID10, ID14, ID15, ID16, ID17
 						for(int i = 0; i < parts.length; i++) {
 							String[] veg = parts[i].split("/");
-							//System.out.print("ID4/ID8/ID9/ID10/ID14/ID15/ID16/ID17: " + Integer.parseInt(veg[0].trim()) * countVegetables(hand, CardType.valueOf(veg[1].trim())) + " ");
+							System.out.println("ID4/ID8/ID9/ID10/ID14/ID15/ID16/ID17: " + Integer.parseInt(veg[0].trim()) * countVegetables(hand, CardType.valueOf(veg[1].trim())) + " ");
 							totalScore += Integer.parseInt(veg[0].trim()) * countVegetables(hand, CardType.valueOf(veg[1].trim()));
 						}
 					}
@@ -370,19 +372,43 @@ public class GameService{
 		return handString;
 	}
 
-	private void isGameOver() {
+	public void sendAllPlayersMessage(String message, Server server) {
+		for (PlayerInterface player : server.getPlayers()) {
+			player.getPlayerCommunication().sendMessage(message);
+		}
+	}
+
+	public boolean isGameOver(MarketInterface market) {
 
 		for (int i = 0; i < market.getTableSize(); i++) {
 			if (market.copyCardFromTable(i) != null) {
-				return;
+				return false;
 			}
 		}
 
-		this.isGameOver = true;
+		return true;
+
 		
 	}
+
+
+	// for testing
+	public PlayerInterface getCurrentPlayer() { 
+		return currentPlayer;
+	}
+
+	// for testing
+	public void setServer(Server server) {
+		this.server = server;
+	}
+
+	public int getCurrentPlayerIndex() {
+		return currentPlayerIndex;
+	}	
+	   
 
 	
        
 }
-    
+
+ 

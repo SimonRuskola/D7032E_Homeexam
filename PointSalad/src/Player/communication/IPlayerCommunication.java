@@ -12,5 +12,8 @@ public interface IPlayerCommunication {
     // Receive input (text) from the player
     String readMessage();
 
+
+
+
    
 }

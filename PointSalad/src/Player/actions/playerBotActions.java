@@ -3,9 +3,6 @@ package PointSalad.src.Player.actions;
 import java.util.ArrayList;
 import java.util.Random;
 
-import org.json.simple.JSONObject;
-
-import PointSalad.src.Cards.Card;
 import PointSalad.src.Cards.CardInterface;
 import PointSalad.src.Market.MarketInterface;
 import PointSalad.src.Player.PlayerInterface;
@@ -45,7 +42,7 @@ public class playerBotActions implements IPlayerActions {
 
         boolean firstCardFound = false;
         for (int i = min; i < max; i++) {
-            CardInterface card = market.getCardFromTable(i);
+            CardInterface card = market.copyCardFromTable(i);
             if (card != null && !firstCardFound) {              // will take the first available card
                 firstIndex = i;
             }
@@ -57,11 +54,18 @@ public class playerBotActions implements IPlayerActions {
 
         
 
-        ArrayList<CardInterface> cards = market.takeTwoCardsFromTable(firstIndex, secondIndex);
+        CardInterface card1 = market.getCardFromTable(firstIndex);
+        CardInterface card2 = market.getCardFromTable(secondIndex);
 
         market.setCardsOnTable();
-        player.addCardToHand(cards.get(0));
-        player.addCardToHand(cards.get(1));
+        if (card1 != null) {
+            player.addCardToHand(card1);
+        }
+        if (card2 != null) {
+            player.addCardToHand(card2);
+        }
+        
+
      
 
         

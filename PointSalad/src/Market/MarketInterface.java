@@ -15,5 +15,4 @@ public interface MarketInterface {
     CardInterface getCardFromPile(int index);
     int getTableSize();
     int getAmountOfPiles();
-    ArrayList<CardInterface> takeTwoCardsFromTable(int index1, int index2);
 }

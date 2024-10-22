@@ -1,7 +1,5 @@
 package PointSalad.src.Player.communication;
 
-import java.util.Scanner;
-import java.util.ArrayList;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -50,5 +48,7 @@ public class OnlinePlayerCommunication implements IPlayerCommunication {
 		try{word = (String) inFromClient.readObject();} catch (Exception e){}
 		return word;
     }
+
+
 
 }

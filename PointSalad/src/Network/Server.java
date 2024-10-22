@@ -6,9 +6,6 @@ import PointSalad.src.Player.PlayerHuman;
 import PointSalad.src.Player.PlayerBot;
 import PointSalad.src.Player.PlayerInterface;
 
-
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 

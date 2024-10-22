@@ -18,6 +18,10 @@ public class BotPlayerCommunication implements IPlayerCommunication {
         return "Bot read message";
     }
 
+    public String parseString(String message) {
+        return message;
+    }
+
  
 
 
