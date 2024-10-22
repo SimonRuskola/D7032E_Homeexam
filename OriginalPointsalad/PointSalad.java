@@ -170,7 +170,7 @@ public class PointSalad {
 		ArrayList<Card> deckOnion = new ArrayList<>();
 		ArrayList<Card> deckTomato = new ArrayList<>();
 
-        try (InputStream fInputStream = new FileInputStream("PointSaladManifest.json");
+        try (InputStream fInputStream = new FileInputStream("OriginalPointsalad\\PointSaladManifest.json");
              Scanner scanner = new Scanner(fInputStream, "UTF-8").useDelimiter("\\A")) {
 
             // Read the entire JSON file into a String
