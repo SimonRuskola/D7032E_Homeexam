@@ -14,13 +14,13 @@ public class CommunicationForTesting implements IPlayerCommunication {
     }
 
     @Override
-    public synchronized void sendMessage(String message) {
+    public void sendMessage(String message) {
         this.recievedMessage = message;
         System.out.println(message);
     }
 
     @Override
-    public synchronized String readMessage() {
+    public String readMessage() {
         System.out.println(this.message);
         return this.message;
     }

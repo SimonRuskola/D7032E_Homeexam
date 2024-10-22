@@ -347,6 +347,7 @@ public class pointSaladTests {
         market = new Market(cardFactory);
         market.setPiles(2);
         gameService = new GameService(market);
+        market.setCardsOnTable();
 
         playerHumanActions playerAction = new playerHumanActions();
         CommunicationForTesting playerCommunication = new CommunicationForTesting();
@@ -375,6 +376,7 @@ public class pointSaladTests {
         market = new Market(cardFactory);
         market.setPiles(2);
         gameService = new GameService(market);
+        market.setCardsOnTable();
         CommunicationForTesting playerCommunication = new CommunicationForTesting();
         Server server;
 
@@ -443,6 +445,7 @@ public class pointSaladTests {
             market = new Market(cardFactory);
             market.setPiles(2);
             gameService = new GameService(market);
+            market.setCardsOnTable();
             CommunicationForTesting playerCommunication = new CommunicationForTesting();
             Server server;
 
