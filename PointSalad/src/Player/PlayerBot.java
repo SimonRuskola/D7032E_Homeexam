@@ -5,6 +5,10 @@ import PointSalad.src.Market.MarketInterface;
 import PointSalad.src.Player.actions.IPlayerActions;
 import PointSalad.src.Player.communication.IPlayerCommunication;
 
+
+// PlayerBot is a class that represents a bot player in the game. It extends the Player class and implements the PlayerInterface.
+
+
 public class PlayerBot extends Player{
    
     

@@ -6,11 +6,6 @@ public class Card implements CardInterface {
     private Object backSide;
     private boolean flipped = false;
 
-    /* public enum Vegetable {
-        PEPPER, LETTUCE, CARROT, CABBAGE, ONION, TOMATO
-    } */
-   
-
   
     public Card(CardTypeInterface vegetable, String criteria) {
 		this.backSide = vegetable;

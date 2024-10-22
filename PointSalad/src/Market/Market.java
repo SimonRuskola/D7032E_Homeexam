@@ -5,6 +5,9 @@ import PointSalad.src.Cards.CardFactoryInterface;
 import PointSalad.src.Cards.CardInterface;
 import PointSalad.src.Cards.PileInterface;
 
+// Market is a class that represents the market in the game.
+// Contains function having to do with the market.
+
 public class Market implements MarketInterface {
     private ArrayList<PileInterface> piles = new ArrayList<>(3);
     private CardFactoryInterface cardFactory;

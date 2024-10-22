@@ -2,10 +2,10 @@ package PointSalad.src.Player.communication;
 
 import java.util.Scanner;
 
-/**
- * This class represents how a local player can communicate with the game.
- * Implements the IPlayerCommunication interface
- */
+
+ //This class represents how a local player can communicate with the game.
+ //Implements the IPlayerCommunication interface
+
 public class LocalPlayerCommunication implements IPlayerCommunication {
 
     private Scanner scanner;

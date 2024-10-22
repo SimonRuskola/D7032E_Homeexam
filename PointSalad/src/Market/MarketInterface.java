@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import PointSalad.src.Cards.CardInterface;
 import PointSalad.src.Cards.PileInterface;
 
+// MarketInterface is an interface that defines the methods that a Market object must implement.
+
 public interface MarketInterface {
     public String printMarket();
     public void setCardsOnTable();

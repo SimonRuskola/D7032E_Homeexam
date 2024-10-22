@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+// Client class that connects to the server
 
 public class Client {
 
@@ -16,6 +17,7 @@ public class Client {
         Socket aSocket = new Socket(ipAddress, 2048);
         ObjectOutputStream outToServer = new ObjectOutputStream(aSocket.getOutputStream());
         ObjectInputStream inFromServer = new ObjectInputStream(aSocket.getInputStream());
+        System.out.println("Connected to server");
         String nextMessage = "";
         while (!nextMessage.contains("winner")) {
             nextMessage = (String) inFromServer.readObject();

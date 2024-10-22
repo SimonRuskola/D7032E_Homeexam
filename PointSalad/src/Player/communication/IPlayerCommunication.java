@@ -1,10 +1,10 @@
 
 package PointSalad.src.Player.communication;
 
-/**
- * This interface handles how each player communicates with for example the
- * game. 
- */
+
+//This interface handles how each player communicates with the game
+
+
 public interface IPlayerCommunication {
     // Send a message to the player
     void sendMessage(String message);

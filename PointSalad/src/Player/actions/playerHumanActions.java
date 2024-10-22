@@ -6,13 +6,8 @@ import PointSalad.src.Market.Market;
 import PointSalad.src.Player.PlayerInterface;
 import PointSalad.src.Market.MarketInterface;
 
-/**
- * This class represents the standard logic a human player has during the game.
- * Implements the IPlayerActions interface and has logic for allowing the player
- * to choose
- * from its hand. Uses each players abstrasction of communication for
- * interaction with player.
- */
+// playerHumanActions is a class that implements the IPlayerActions interface. It defines the actions that a human player can take in the game.
+
 public class playerHumanActions implements IPlayerActions {
 
     int max;
@@ -149,7 +144,7 @@ public class playerHumanActions implements IPlayerActions {
             max = player.getHand().size();
             min = 0;
 
-            if (cardIndex >= min && cardIndex <= max) {
+            if (cardIndex >= min && cardIndex <= max && player.getHand().get(cardIndex).isFlipped() == false) {
                 CardInterface card = player.getHand().get(cardIndex);
                 if (card != null) {
                     card.flipCard();

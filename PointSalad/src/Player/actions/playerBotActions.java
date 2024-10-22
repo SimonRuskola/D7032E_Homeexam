@@ -9,8 +9,7 @@ import PointSalad.src.Player.PlayerInterface;
 
 /**
  * This class represents the logic a bot player has during the game. Implements
- * the IPlayerActions interface and has logic for how the bot picks a card from
- * its hand
+ * the IPlayerActions interface and has logic for how the bot chosses cards.
  */
 
 public class playerBotActions implements IPlayerActions {

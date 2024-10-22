@@ -3,9 +3,10 @@ package PointSalad.src.Player;
 import java.util.ArrayList;
 
 import PointSalad.src.Cards.CardInterface;
-
 import PointSalad.src.Player.communication.IPlayerCommunication;
 import PointSalad.src.Player.actions.IPlayerActions;
+
+// Player is an abstract class that contains the basic functionality of a player in the game.
 
 public abstract class Player implements PlayerInterface{
     

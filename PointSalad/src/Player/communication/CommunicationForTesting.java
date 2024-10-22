@@ -1,5 +1,8 @@
 package PointSalad.src.Player.communication;
 
+
+//This class is used for testing the communication between the player and the game
+
 public class CommunicationForTesting implements IPlayerCommunication {
 
     private String message;

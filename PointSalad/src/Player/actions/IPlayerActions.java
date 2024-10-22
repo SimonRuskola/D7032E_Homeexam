@@ -3,11 +3,8 @@ package PointSalad.src.Player.actions;
 import PointSalad.src.Player.PlayerInterface;
 import PointSalad.src.Market.MarketInterface;
 
-/**
- * This interface represents the actioon of how different players can execute
- * the pick card action during the game. Each player is injected with a class
- * that implements this interface
- */
+// IPlayerActions is an interface that defines how players can interact with the game.
+
 public interface IPlayerActions {
 
     void cardChoise(PlayerInterface player, MarketInterface market);

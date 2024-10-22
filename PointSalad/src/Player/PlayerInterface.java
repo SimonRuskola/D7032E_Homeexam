@@ -5,6 +5,8 @@ import PointSalad.src.Cards.CardInterface;
 import PointSalad.src.Player.actions.IPlayerActions;
 import PointSalad.src.Player.communication.IPlayerCommunication;
 
+// PlayerInterface is an interface that defines the methods that a Player object must implement.
+
 public interface PlayerInterface {
 
     int getPlayerID();

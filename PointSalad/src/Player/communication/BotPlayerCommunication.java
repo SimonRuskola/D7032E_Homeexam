@@ -1,15 +1,14 @@
 package PointSalad.src.Player.communication;
 
 
-/**
- * This class represents how a remote player can communicate with the game.
- * Implements the IPlayerCommunication interface
- */
+//This class handles how the bot communicates with the game
+// used for testing purposes
+
 public class BotPlayerCommunication implements IPlayerCommunication {
 
     @Override
     public void sendMessage(String message) {
-        System.out.println("Bot: "+message);
+        //System.out.println("Bot: "+message);
     }
 
     @Override
@@ -18,9 +17,6 @@ public class BotPlayerCommunication implements IPlayerCommunication {
         return "Bot read message";
     }
 
-    public String parseString(String message) {
-        return message;
-    }
 
  
 

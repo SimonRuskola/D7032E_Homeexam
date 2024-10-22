@@ -1,39 +1,23 @@
 package PointSalad.src.Network;
 
 import java.util.ArrayList;
-
-import PointSalad.src.Player.PlayerHuman;
-import PointSalad.src.Player.PlayerBot;
-import PointSalad.src.Player.PlayerInterface;
-
 import java.net.ServerSocket;
 import java.net.Socket;
 
 
-
+import PointSalad.src.Player.PlayerHuman;
+import PointSalad.src.Player.PlayerBot;
+import PointSalad.src.Player.PlayerInterface;
 import PointSalad.src.Market.MarketInterface;
 import PointSalad.src.Player.communication.*;
 import PointSalad.src.Player.actions.*;
+
+// Server is a class that represents the server in the game. It is responsible for managing the players and their connections.
 
 public class Server {
 
     private ServerSocket aSocket;
     private ArrayList<PlayerInterface> players = new ArrayList<PlayerInterface>();
-    
-
-    public void sendToAllPlayers(String message) {
-		for(PlayerInterface player : players) {
-			player.getPlayerCommunication().sendMessage(message);
-		}
-	}
-
-    public PlayerInterface getPlayer(int playerID) {
-        return players.get(playerID);
-    }
-
-    public ArrayList<PlayerInterface> getPlayers() {
-        return players;
-    }
 
     public Server(int numberPlayers, int numberOfBots, MarketInterface market) throws Exception {
     
@@ -51,6 +35,20 @@ public class Server {
             System.out.println("Connected to player " + i);
             //outToClient.writeObject("You connected to the server as player " + i + "\n");
         }    
+    }
+
+     public void sendToAllPlayers(String message) {
+		for(PlayerInterface player : players) {
+			player.getPlayerCommunication().sendMessage(message);
+		}
+	}
+
+    public PlayerInterface getPlayer(int playerID) {
+        return players.get(playerID);
+    }
+
+    public ArrayList<PlayerInterface> getPlayers() {
+        return players;
     }
     
 }

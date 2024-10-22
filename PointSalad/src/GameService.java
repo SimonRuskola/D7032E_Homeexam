@@ -13,12 +13,12 @@ import PointSalad.src.Network.Server;
 import PointSalad.src.Player.PlayerInterface;
 
 
-
+// GameService class is responsible for starting the game, playing the game and ending the game
+// It also calculates the score for each player and determines the winner
 
 public class GameService{
     
     private MarketInterface market;
-	//private ArrayList<Player> players = new ArrayList<Player>();
 	private int numberPlayers = 0;
 	private int numberOfBots = 0;
 	private int currentPlayerIndex;
@@ -27,8 +27,6 @@ public class GameService{
 
 	public GameService(MarketInterface market) {
 		this.market = market;
-		market.setPiles(2); // should be changed to number of players
-        market.setCardsOnTable();
 
 	}
 
@@ -73,14 +71,12 @@ public class GameService{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		//setup of market
+		this.market.setPiles(numberPlayers+numberOfBots); 
+		this.market.setCardsOnTable();
 		
 		
-
-		//for (int i = 0; i < numberPlayers; i++) {
-		//	server.getPlayers().add(new Player(i, false));
-		//}
-
-		// Set random starting player
 		this.currentPlayer = setRandomStartingPlayer(numberPlayers, numberOfBots);
 		this.currentPlayerIndex = currentPlayer.getPlayerID();
 
@@ -89,7 +85,7 @@ public class GameService{
 
 			int score = calculateScore(currentPlayer);
 
-			sendAllPlayersMessage("Player:"+currentPlayer.getPlayerID()+" hand: \n"+displayHand(currentPlayer.getHand()), this.server);
+			sendAllPlayersMessage("Player:"+currentPlayer.getPlayerID()+" hand: \n"+HandtoString(currentPlayer.getHand()), this.server);
 
 			currentPlayer.getPlayerCommunication().sendMessage("\n\nYour score is: " + score);
 			
@@ -219,7 +215,7 @@ public class GameService{
 						if(countVeg == thisHandCount) {
 						
 							int aScore = Integer.parseInt(criteria.substring(criteria.indexOf("=")+1).trim());
-							System.out.println("ID18 MOST/FEWEST: "+aScore + " " );
+							//System.out.println("ID18 MOST/FEWEST: "+aScore + " " );
 							totalScore += aScore;
 						}
 					}
@@ -234,7 +230,7 @@ public class GameService{
 								}
 							}
 							int aScore = missing * addScore;
-							System.out.println("ID18 TYPE MISSING: "+aScore + " ");
+							//System.out.println("ID18 TYPE MISSING: "+aScore + " ");
 							totalScore += aScore;
 						}
 						else {
@@ -247,7 +243,7 @@ public class GameService{
 								}
 							}
 							int aScore = totalType * addScore;
-							System.out.println("ID18 TYPE >=: "+aScore + " ");
+							//System.out.println("ID18 TYPE >=: "+aScore + " ");
 							totalScore += aScore;
 						}
 					}
@@ -262,7 +258,7 @@ public class GameService{
 								break;
 							}
 						}
-						System.out.println("ID18 SET: "+addScore + " ");
+						//System.out.println("ID18 SET: "+addScore + " ");
 						totalScore += addScore;
 					}
 				}
@@ -304,7 +300,7 @@ public class GameService{
 							}
 						}
 						if(countSameKind > 1) {
-							System.out.println("ID5/ID11: "+ ((int)countVegetables(hand, CardType.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
+							//System.out.println("ID5/ID11: "+ ((int)countVegetables(hand, CardType.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
 							totalScore +=  ((int)countVegetables(hand, CardType.valueOf(vegs[0].trim()))/countSameKind) * Integer.parseInt(criteria.split("=")[1].trim());
 						} else {
 							for(int i = 0; i < vegs.length; i++) {
@@ -317,20 +313,20 @@ public class GameService{
 									min = nrVeg[x];
 								}
 							}
-							System.out.println("ID6/ID7/ID12/ID13: "+min * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
+							//System.out.println("ID6/ID7/ID12/ID13: "+min * Integer.parseInt(criteria.split("=")[1].trim()) + " ");
 							totalScore += min * Integer.parseInt(criteria.split("=")[1].trim());
 						}
 					}
 					else if(parts[0].indexOf("=")>=0) { //ID3
 						String veg = parts[0].substring(0, parts[0].indexOf(":"));
 						int countVeg = countVegetables(hand, CardType.valueOf(veg));
-						System.out.println("ID3: "+((countVeg%2==0)?7:3) + " ");
+						//System.out.println("ID3: "+((countVeg%2==0)?7:3) + " ");
 						totalScore += (countVeg%2==0)?7:3;
 					}
 					else { //ID4, ID8, ID9, ID10, ID14, ID15, ID16, ID17
 						for(int i = 0; i < parts.length; i++) {
 							String[] veg = parts[i].split("/");
-							System.out.println("ID4/ID8/ID9/ID10/ID14/ID15/ID16/ID17: " + Integer.parseInt(veg[0].trim()) * countVegetables(hand, CardType.valueOf(veg[1].trim())) + " ");
+							//System.out.println("ID4/ID8/ID9/ID10/ID14/ID15/ID16/ID17: " + Integer.parseInt(veg[0].trim()) * countVegetables(hand, CardType.valueOf(veg[1].trim())) + " ");
 							totalScore += Integer.parseInt(veg[0].trim()) * countVegetables(hand, CardType.valueOf(veg[1].trim()));
 						}
 					}
@@ -347,18 +343,30 @@ public class GameService{
 
         currentPlayer.getActions().cardChoise(currentPlayer, this.market);
 
-        currentPlayer.getActions().flipCardConformation(currentPlayer);
+		if(hasPointcard(currentPlayer)) {
+			currentPlayer.getActions().flipCardConformation(currentPlayer);
+		}
     }
 
+
+	private boolean hasPointcard(PlayerInterface player) {
+		for (CardInterface card : player.getHand()) {
+			if (!card.isFlipped()) {
+				return true;
+			}
+		}
+		return false;
+	}
 	private void sendInitialMessages(PlayerInterface currentPlayer) {
 		currentPlayer.getPlayerCommunication().sendMessage("\n\n****************************************************************\n" + "It's your turn! Your hand is:" + "\n");
-        currentPlayer.getPlayerCommunication().sendMessage(displayHand(currentPlayer.getHand()));
+        currentPlayer.getPlayerCommunication().sendMessage(HandtoString(currentPlayer.getHand()));
 		currentPlayer.getPlayerCommunication().sendMessage(this.market.printMarket());
     }
-
 	
 
-	public String displayHand(ArrayList<CardInterface> hand) {
+	// Return a string representation of the hand
+
+	public String HandtoString(ArrayList<CardInterface> hand) {
 		
 		if (hand == null) {
 			return "Hand is empty";
@@ -402,6 +410,7 @@ public class GameService{
 		this.server = server;
 	}
 
+	//for testing
 	public int getCurrentPlayerIndex() {
 		return currentPlayerIndex;
 	}	

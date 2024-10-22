@@ -15,6 +15,8 @@ import PointSalad.src.Player.communication.CommunicationForTesting;
 import PointSalad.src.Network.*;
 import PointSalad.src.Cards.*;
 
+// This class tests the requirements of the Point Salad game
+
 public class pointSaladTests {
 
     private GameService gameService;
@@ -189,7 +191,7 @@ public class pointSaladTests {
                 differentStartingPlayer = true;
                 break;
             }
-            System.out.println("Starting player: " + startingPlayer.getPlayerID());
+            //System.out.println("Starting player: " + startingPlayer.getPlayerID());
         }
 
         assertEquals(true, differentStartingPlayer);    
@@ -327,11 +329,11 @@ public class pointSaladTests {
                 sameCards = true;
             }
 
-            System.out.println("Card1: " + card1.toString());
-            System.out.println("Also Card1 "+player.getHand().get(0).toString());
+            //System.out.println("Card1: " + card1.toString());
+            //System.out.println("Also Card1 "+player.getHand().get(0).toString());
 
-            System.out.println("Card2: " + card2.toString());
-            System.out.println("Also Card2 "+player.getHand().get(1).toString());
+            //System.out.println("Card2: " + card2.toString());
+            //System.out.println("Also Card2 "+player.getHand().get(1).toString());
 
             assertEquals(true, sameCards);
 
@@ -420,14 +422,14 @@ public class pointSaladTests {
                 CardInterface card = server.getPlayer(0).getHand().get(i);
                 card.flipCard();
             }
-            System.out.println(gameService.displayHand(server.getPlayer(0).getHand()));
+            //System.out.println(gameService.displayHand(server.getPlayer(0).getHand()));
             gameService.setServer(server);
             score = gameService.calculateScore(server.getPlayer(0));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-        System.out.println("Score: " + score);
+        //System.out.println("Score: " + score);
 
         assertEquals(112, score);
 
@@ -458,7 +460,7 @@ public class pointSaladTests {
                 CardInterface card = server.getPlayer(0).getHand().get(1);
                 card.flipCard();
               
-                System.out.println(gameService.displayHand(server.getPlayer(0).getHand()));
+                //System.out.println(gameService.displayHand(server.getPlayer(0).getHand()));
                 gameService.setServer(server);
 
                 gameService.endGame();
